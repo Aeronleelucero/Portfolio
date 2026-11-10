@@ -1,0 +1,79 @@
+import { CatmullRomCurve3, Vector3 } from 'three'
+import { projects as projectData } from '../data/projects'
+
+const PROJECT_START_Z = -54
+const PROJECT_SPACING = 10
+const projectZ = (i) => PROJECT_START_Z - i * PROJECT_SPACING
+const lastProjectZ = projectZ(projectData.length - 1)
+
+/**
+ * World layout — where every 3D "station" lives in the continuous environment.
+ * The journey travels down -Z, weaving left and right. Camera keyframes,
+ * scene keyframes and 3D objects all read from here so they stay in sync.
+ */
+export const WORLD = {
+  core: [0, 0, 0],
+
+  education: {
+    railX: -6,
+    railY: -1.6,
+    railStartZ: -9,
+    railEndZ: -30,
+    // Year → z position along the rail.
+    yearZ: (year) => -12 - (year - 2020) * 2.5,
+    gateYears: [2020, 2022, 2026],
+  },
+
+  skills: [6.5, 0.4, -40],
+
+  // Alternating left / right down the corridor, one per project.
+  projects: projectData.map((_, i) => [i % 2 === 0 ? -4.5 : 4.5, 0, projectZ(i)]),
+
+  // Far enough past the last project that it falls behind the camera.
+  achievements: { base: [0, -2.2, lastProjectZ - 26], height: 9, radius: 2.1 },
+}
+
+const edu = WORLD.education
+const eduPoint = (year) => [edu.railX, edu.railY, edu.yearZ(year)]
+
+/** Points the "data conduit" passes through, in journey order. */
+export const CONDUIT_POINTS = [
+  [0, -0.2, 2.5],
+  WORLD.core,
+  [-3.2, -1.4, -5],
+  eduPoint(2019),
+  eduPoint(2020),
+  eduPoint(2022),
+  eduPoint(2026),
+  [0, -0.8, -34],
+  WORLD.skills,
+  [2, -0.6, -48],
+  ...WORLD.projects,
+  [2.4, -2, lastProjectZ - 12],
+  [1.2, -2.2, lastProjectZ - 20],
+  WORLD.achievements.base,
+  [0, WORLD.achievements.base[1] + WORLD.achievements.height, WORLD.achievements.base[2]],
+].map((p) => new Vector3(...p))
+
+export const conduitCurve = new CatmullRomCurve3(CONDUIT_POINTS, false, 'centripetal', 0.5)
+
+/** Arc-length parameter (0..1) of the curve point nearest to `p`. */
+export function curveParamNear(p) {
+  const target = new Vector3(...p)
+  const samples = 600
+  let best = 0
+  let bestDist = Infinity
+  const tmp = new Vector3()
+  for (let i = 0; i <= samples; i++) {
+    const u = i / samples
+    conduitCurve.getPointAt(u, tmp)
+    const d = tmp.distanceToSquared(target)
+    if (d < bestDist) {
+      bestDist = d
+      best = u
+    }
+  }
+  return best
+}
+
+export const vec = (arr, dx = 0, dy = 0, dz = 0) => [arr[0] + dx, arr[1] + dy, arr[2] + dz]
