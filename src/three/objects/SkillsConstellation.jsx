@@ -33,7 +33,7 @@ const NODE_GEOMETRIES = [
   () => new CylinderGeometry(0.25, 0.25, 0.42, 6),
 ]
 
-const grey = new Color('#b9bdc6')
+const grey = new Color('#bdb4cc')
 const red = new Color(PALETTE.accent).multiplyScalar(1.6)
 
 /**
@@ -62,7 +62,7 @@ export default function SkillsConstellation() {
       skillCategories.map(
         () =>
           new MeshStandardMaterial({
-            color: '#dfe2e8',
+            color: '#e4dfec',
             metalness: 1,
             roughness: 0.18,
             emissive: PALETTE.accent,

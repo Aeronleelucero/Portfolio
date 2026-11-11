@@ -8,7 +8,7 @@ import { runtime } from '../runtime'
 
 /**
  * Where the conduit begins: a small socket beneath the Digital Core, so the
- * red line visibly emerges from the sculpture's base instead of floating.
+ * glowing line visibly emerges from the sculpture's base instead of floating.
  */
 function ConduitPort() {
   const parts = useMemo(
@@ -31,7 +31,7 @@ function ConduitPort() {
 
 /**
  * The "data conduit" — a thin line threading every station of the journey.
- * The traveled part glows red with pulses flowing forward; the road ahead
+ * The traveled part glows magenta with pulses flowing forward; the road ahead
  * stays a quiet graphite line. Progress is scroll-driven.
  */
 export default function Conduit({ segments = 900 }) {
@@ -45,9 +45,9 @@ export default function Conduit({ segments = 900 }) {
         uniforms: {
           uProgress: { value: 0 },
           uTime: { value: 0 },
-          uBase: { value: new Color('#32363f') },
+          uBase: { value: new Color('#2e2740') },
           uLit: { value: new Color(PALETTE.accent) },
-          uHead: { value: new Color('#ff6b5e') },
+          uHead: { value: new Color('#eaa8f0') },
         },
         vertexShader: /* glsl */ `
           varying float vU;

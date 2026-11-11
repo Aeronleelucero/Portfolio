@@ -6,6 +6,7 @@ import {
   Float32BufferAttribute,
   IcosahedronGeometry,
   MathUtils,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   Object3D,
   Raycaster,
@@ -22,6 +23,7 @@ import { WORLD } from '../worldLayout'
 import { chrome, darkMetal, satinMetal, accentGlow, PALETTE } from '../materials'
 import { runtime } from '../runtime'
 import CoreDust from './CoreDust'
+import CoreFeathers from './CoreFeathers'
 
 /**
  * Builds the core shell: 20 icosahedron faces as separate bevelled plates.
@@ -65,7 +67,7 @@ function buildFacetGeometry() {
     n.copy(centroid).normalize()
     const rand = Math.random()
 
-    // Tight hairline seams when sealed: a wider inset let the red heart show
+    // Tight hairline seams when sealed: a wider inset let the glowing heart show
     // through only the camera-facing seams, reading as a stray diagonal strip.
     const shrink = 0.97
     const top = [a, b, c].map((v) => v.clone().sub(centroid).multiplyScalar(shrink).add(centroid))
@@ -95,11 +97,19 @@ function buildFacetGeometry() {
 }
 
 function createFacetMaterial(uniforms) {
-  const material = new MeshStandardMaterial({
-    color: '#dfe2e8',
+  // Lavender steel with a thin-film iridescent clearcoat: plates shift
+  // between violet and teal as the core turns.
+  const material = new MeshPhysicalMaterial({
+    color: '#e4dfec',
     metalness: 1,
-    roughness: 0.24,
+    roughness: 0.22,
     envMapIntensity: 1.4,
+    iridescence: 0.45,
+    iridescenceIOR: 1.3,
+    iridescenceThicknessMinimum: 220,
+    iridescenceThicknessMaximum: 600,
+    clearcoat: 0.35,
+    clearcoatRoughness: 0.2,
   })
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uExpand = uniforms.uExpand
@@ -193,7 +203,7 @@ const HIT_RADIUS = 1.6
 const MAX_INTERACT_DISTANCE = 26
 const DRAG_TOLERANCE = 8 // px between pointerdown and click
 
-export default function DigitalCore({ particleCount = 200 }) {
+export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
   const root = useRef()
   const shell = useRef()
   const heart = useRef()
@@ -217,7 +227,7 @@ export default function DigitalCore({ particleCount = 200 }) {
   const heartMaterial = useMemo(
     () =>
       new MeshStandardMaterial({
-        color: '#0d0202',
+        color: '#12041a',
         emissive: PALETTE.accent,
         emissiveIntensity: 1.5,
         roughness: 0.35,
@@ -372,6 +382,7 @@ export default function DigitalCore({ particleCount = 200 }) {
         </group>
       ))}
 
+      <CoreFeathers anim={anim} quality={quality} />
       <CoreDust count={particleCount} />
     </group>
   )

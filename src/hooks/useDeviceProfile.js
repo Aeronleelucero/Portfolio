@@ -52,6 +52,7 @@ export function useDeviceProfile() {
     coarsePointer: coarse,
     tier: low ? 'low' : 'high',
     particleCount: low ? 900 : 2600,
-    maxDpr: low ? 1.35 : 1.75,
+    maxDpr: low ? 1.35 : 2,
+    minDpr: low ? 1 : 1.25,
   }
 }

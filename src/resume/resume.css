@@ -1,10 +1,11 @@
 :root {
-  --ink: #111318;
-  --ink-2: #4a4d55;
-  --rule: #d9dadd;
-  --accent: #c62828;
+  --ink: #1c1222; /* plum-black: 16:1 on paper */
+  --ink-2: #4d4458;
+  --rule: #dcd6e3;
+  --accent: #8750a5; /* violet section titles: 5.6:1 on paper */
+  --heading: #321039; /* dark plum name */
   --paper: #ffffff;
-  --desk: #e9eaec;
+  --desk: #ece8f1;
 }
 
 * {
@@ -54,7 +55,7 @@ a {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: rgba(233, 234, 236, 0.92);
+  background: rgb(236 232 241 / 0.92);
   backdrop-filter: blur(8px);
 }
 
@@ -73,8 +74,8 @@ a {
 
 .toolbar__btn--primary {
   color: #fff;
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--heading);
+  border-color: var(--heading);
 }
 
 /* ---------- Sheet ---------- */
@@ -84,15 +85,16 @@ a {
   margin: 1rem auto 3rem;
   padding: 16mm 17mm;
   background: var(--paper);
-  box-shadow: 0 10px 40px rgba(17, 19, 24, 0.12);
+  box-shadow: 0 10px 40px rgb(50 16 57 / 0.12);
 }
 
 .r-header {
   padding-bottom: 5mm;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 2px solid var(--heading);
 }
 
 .r-header h1 {
+  color: var(--heading);
   font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
   font-stretch: 118%;
   font-weight: 700;

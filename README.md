@@ -9,7 +9,7 @@ holds a continuous world; scrolling flies the camera from station to station:
 
 | Chapter | 3D station |
 | --- | --- |
-| 01 Introduction | **Digital Core**: faceted chrome shell, red heart, three orbital rings; tilts toward the pointer, glows on hover, and unfolds into an exploded view on click (or via the hero's "Digital Core" button) |
+| 01 Introduction | **Digital Core**: iridescent faceted shell, magenta heart, three orbital rings and a layered plume of iridescent feathers; tilts toward the pointer, glows on hover, and unfolds into an exploded view on click (or via the hero's "Digital Core" button) |
 | 02 About | Portrait and introduction; the core splits open, rings spread |
 | 03 Education | A rail of years with gates at 2020 / 2022 / 2026 that light up as you travel through time |
 | 04 Expertise | A constellation: one node per category, one satellite per technology. Hover or select a category to bring it forward |
@@ -17,7 +17,19 @@ holds a continuous world; scrolling flies the camera from station to station:
 | 06 Milestones | An ascending helix whose nodes light up in sequence |
 | 07 Contact | The camera rewinds over the whole lit path back to the Digital Core |
 
-A red "data conduit" rises from a port beneath the Digital Core and runs beneath every station (along the plinths, under the constellation), lighting up behind you as you go.
+A magenta "data conduit" rises from a port beneath the Digital Core and runs beneath every station (along the plinths, under the constellation), lighting up behind you as you go.
+
+## Design system
+
+Palette: Dark Plum `#321039` · Midnight Blue `#1D3158` · Violet `#8750A5` ·
+Muted Teal `#4F8195` · Magenta `#B454BC` — plum-black backgrounds, midnight
+secondary surfaces, violet primary accent, magenta highlights/glow, teal as the
+cool contrast accent. Text colors meet WCAG AA (≥ 4.5:1).
+
+- HTML: all colors are tokens in `src/styles/tokens.css` (with `--*-rgb`
+  channel tokens for translucency).
+- 3D: `PALETTE` and shared materials in `src/three/materials.js`; lighting and
+  reflections in `src/three/Environment.jsx`.
 
 ## Getting started
 

@@ -24,7 +24,7 @@ export default function Experience({ profile }) {
       />
       <SceneEnvironment />
 
-      <DigitalCore particleCount={low ? 90 : 220} />
+      <DigitalCore particleCount={low ? 90 : 220} quality={low ? 'low' : 'high'} />
       <Conduit segments={low ? 500 : 900} />
       <EducationTimeline />
       <SkillsConstellation />

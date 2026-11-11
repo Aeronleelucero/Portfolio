@@ -14,7 +14,7 @@ const lastProjectZ = projectZ(projectData.length - 1)
 export const WORLD = {
   core: [0, 0, 0],
   // The conduit's source: a small port beneath the Digital Core, clear of
-  // the shell and rings, so the red line emerges from the sculpture's base.
+  // the shell and rings, so the glowing line emerges from the sculpture's base.
   corePort: [0, -3.2, 0],
 
   education: {

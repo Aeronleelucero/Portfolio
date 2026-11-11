@@ -32,7 +32,7 @@ export default function GroundGrid({ y = -4.4 }) {
             float d = length(vWorld.xz - cameraPosition.xz);
             float fade = 1.0 - smoothstep(6.0, 42.0, d);
             float a = max(minor, major) * fade * 0.5;
-            gl_FragColor = vec4(vec3(0.2, 0.21, 0.25), a);
+            gl_FragColor = vec4(vec3(0.22, 0.19, 0.31), a);
           }
         `,
       }),

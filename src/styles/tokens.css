@@ -1,15 +1,60 @@
 :root {
-  /* Palette */
-  --bg: #08090b;
-  --surface: #111318;
-  --surface-glass: rgba(17, 19, 24, 0.62);
-  --text: #f5f5f5;
-  --text-2: #92959e;
-  --text-3: #6b6e76;
-  --accent: #c62828;
-  --accent-bright: #e0453f;
-  --border: #272a30;
-  --border-strong: #3a3e47;
+  /* ---- Palette ----
+     Source colors: Dark Plum #321039 · Midnight Blue #1D3158 · Violet #8750A5
+     Muted Teal #4F8195 · Magenta #B454BC
+     Hierarchy: plum-black backgrounds → midnight secondary surfaces →
+     violet primary accent → magenta highlights/glow → teal contrast accent. */
+  --plum: #321039;
+  --midnight: #1d3158;
+  --violet: #8750a5;
+  --teal: #4f8195;
+  --magenta: #b454bc;
+
+  /* Channel tokens for translucent colors: rgb(var(--x-rgb) / 0.4) */
+  --bg-rgb: 11 9 16;
+  --ink-rgb: 7 5 11;
+  --shadow-rgb: 3 1 8;
+  --surface-rgb: 21 17 34;
+  --surface-deep-rgb: 14 11 22;
+  --plum-rgb: 50 16 57;
+  --midnight-rgb: 29 49 88;
+  --violet-rgb: 135 80 165;
+  --magenta-rgb: 180 84 188;
+  --teal-rgb: 79 129 149;
+  --sheen-rgb: 196 182 220;
+
+  /* Surfaces */
+  --bg: #0b0910;
+  --bg-ink: #09070d;
+  --surface: #151122;
+  --surface-raised: #1a1527;
+  --surface-glass: rgb(var(--surface-rgb) / 0.62);
+
+  /* Text (all ≥ 4.5:1 on --bg and on panels) */
+  --text: #f4f1f8;
+  --text-soft: #e2dceb;
+  --text-body: #cdc7d8;
+  --text-2: #a39bb4;
+  --text-3: #8a819b;
+
+  /* Accents */
+  --accent: var(--violet); /* borders, fills, active states — not small text */
+  --accent-bright: #cd8fd4; /* text-safe violet-magenta tint (≈8:1) */
+  --accent-teal: #7fb0c2; /* text-safe teal tint (≈8.4:1) */
+  --glow: var(--magenta);
+  --gradient-accent: linear-gradient(135deg, #7a4699 0%, #a24aab 100%); /* white text ≥ 5.1:1 */
+  --gradient-line: linear-gradient(90deg, var(--violet), var(--magenta));
+
+  /* Lines */
+  --border: #2b2438;
+  --border-strong: #42395a;
+
+  /* Metallic frames (plum-tinted steel) */
+  --metal-1: #6a6178;
+  --metal-2: #1b1624;
+  --metal-3: #2b2437;
+  --metal-4: #9d93ad;
+  --metal-frame: linear-gradient(150deg, var(--metal-1) 0%, var(--metal-2) 38%, var(--metal-3) 62%, var(--metal-4) 100%);
 
   /* Typography */
   --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;

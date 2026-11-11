@@ -12,7 +12,7 @@ const ACCENT_SLOTS = new Set([1, 5])
 // Slots whose crates slide in and out, like stock moving through inventory.
 const MOVING = { 2: 0, 4: 2.1, 6: 4.2 }
 
-const grey = new Color('#8f949e')
+const grey = new Color('#958ca6')
 const red = new Color(PALETTE.accent).multiplyScalar(1.3)
 
 /** PAWS4PALS — a shelving rack with crates sliding in and out of stock. */

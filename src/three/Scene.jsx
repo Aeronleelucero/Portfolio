@@ -29,9 +29,9 @@ export default function Scene({ profile }) {
       >
         <PerformanceMonitor
           flipflops={3}
-          onDecline={() => setDpr(1)}
+          onDecline={() => setDpr(profile.minDpr)}
           onIncline={() => setDpr(profile.maxDpr)}
-          onFallback={() => setDpr(1)}
+          onFallback={() => setDpr(profile.minDpr)}
         />
         <Suspense fallback={null}>
           <Experience profile={profile} />

@@ -40,12 +40,12 @@ function buildPattern() {
   return cells
 }
 
-const base = new Color('#c4c8d0')
+const base = new Color('#c7bfd6')
 const hot = new Color(PALETTE.accent).multiplyScalar(2.2)
 const tmp = new Color()
 
 /**
- * QR Attendance — a voxel QR code with a red scan line sweeping across it;
+ * QR Attendance — a voxel QR code with a magenta scan line sweeping across it;
  * modules lift and flare as the scanner passes, like a code being read.
  */
 export default function QREmblem({ focus }) {

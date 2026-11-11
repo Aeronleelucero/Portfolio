@@ -11,7 +11,7 @@ const LAYERS = [darkMetal, satinMetal, glass, darkMetal, chrome]
 
 /**
  * UnityCard — a fanned stack of ID cards that breathes open and closed;
- * the top card carries a red identity stripe, a chip and data lines.
+ * the top card carries an accent identity stripe, a chip and data lines.
  */
 export default function CardsEmblem({ focus }) {
   const cards = useRef([])
