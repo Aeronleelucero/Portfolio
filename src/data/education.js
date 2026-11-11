@@ -21,6 +21,6 @@ export const education = [
     credential: 'Bachelor of Science in Computer Science',
     shortCredential: 'BS Computer Science',
     institution: 'University of Mindanao Tagum College',
-    summary: 'Undergraduate degree in computer science.',
+    summary: 'Completed my Bachelor of Science in Computer Science at the University of Mindanao Tagum College.',
   },
 ]
