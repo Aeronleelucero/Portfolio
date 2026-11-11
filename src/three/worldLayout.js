@@ -39,26 +39,32 @@ export const WORLD = {
 const edu = WORLD.education
 const eduPoint = (year) => [edu.railX, edu.railY, edu.yearZ(year)]
 
-// The conduit runs *beneath* each exhibit rather than through it: along the
-// top of each project plinth and under the skills constellation.
+// The conduit runs *beneath* each exhibit rather than through it: low along
+// the floor between stations (well below every camera path), along the top of
+// each project plinth, under the skills constellation, and just above — never
+// flush with — the recognition tower's base. Along the Education rail it is
+// masked out (see Conduit.jsx): the rail's own progress strip is the line there.
 const PLINTH_TOP_Y = -1.64
-const underSkills = [WORLD.skills[0], -2.2, WORLD.skills[2]]
+const underSkills = [WORLD.skills[0], -2.3, WORLD.skills[2]]
+const towerBase = WORLD.achievements.base
+const aboveTowerBase = towerBase[1] + 0.06
 
 /** Points the "data conduit" passes through, in journey order. */
 export const CONDUIT_POINTS = [
   WORLD.corePort,
-  [-2.8, -2.5, -4.8],
+  [-2.6, -3.3, -4.2],
+  [-5.2, -2.5, -7.6],
   eduPoint(2019),
   eduPoint(2020),
   eduPoint(2022),
   eduPoint(2026),
-  [0, -0.8, -34],
+  [-3.2, -2.9, -32],
   underSkills,
-  [2, -1.4, -48],
+  [1.5, -2.0, -48],
   ...WORLD.projects.map(([x, , z]) => [x, PLINTH_TOP_Y, z]),
   [2.4, -2, lastProjectZ - 12],
-  [1.2, -2.2, lastProjectZ - 20],
-  WORLD.achievements.base,
+  [1.2, aboveTowerBase, lastProjectZ - 20],
+  [0, aboveTowerBase, towerBase[2]],
   [0, WORLD.achievements.base[1] + WORLD.achievements.height, WORLD.achievements.base[2]],
 ].map((p) => new Vector3(...p))
 

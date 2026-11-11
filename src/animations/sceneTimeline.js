@@ -21,6 +21,7 @@ export const sceneState = {
   projectFocus: -1, // fractional index of the project in focus
   towerReveal: 0, // achievements helix nodes lit (0..1)
   exposure: 1,
+  conduitOpacity: 0.85, // section-aware visibility of the journey line
 }
 
 const { education: edu, skills, projects, achievements } = WORLD
@@ -46,25 +47,27 @@ const base = {
   projectFocus: -1,
   towerReveal: 0,
   exposure: 1,
+  conduitOpacity: 0.6,
 }
 
 /** One scene keyframe per station (missing values inherit from `base`). */
 const KEYFRAMES = {
-  hero: { coreExpand: 0, conduitProgress: u.core * 0.6, eduYear: 2019, fogNear: 10, fogFar: 24, rimLight: 2.4 },
-  about: { coreExpand: 0.32, conduitProgress: u.core, eduYear: 2019, fogNear: 6, fogFar: 36, rimLight: 3.6, particleSpeed: 0.18 },
-  [`education-${educationData[0].id}`]: { conduitProgress: u.eduSti, eduYear: 2022, fogNear: 4, fogFar: 30, rimLight: 2.2 },
-  [`education-${educationData[1].id}`]: { conduitProgress: u.eduUmtc, eduYear: 2026, fogNear: 4, fogFar: 30, rimLight: 2.4 },
-  skills: { conduitProgress: u.skills, eduYear: 2026, skillsReveal: 1, rimLight: 2.8, particleSpeed: 0.2 },
+  hero: { coreExpand: 0, conduitProgress: u.core * 0.6, conduitOpacity: 0.85, eduYear: 2019, fogNear: 10, fogFar: 24, rimLight: 2.4 },
+  about: { coreExpand: 0.32, conduitProgress: u.core, conduitOpacity: 0.7, eduYear: 2019, fogNear: 6, fogFar: 36, rimLight: 3.6, particleSpeed: 0.18 },
+  [`education-${educationData[0].id}`]: { conduitProgress: u.eduSti, conduitOpacity: 0.35, eduYear: 2022, fogNear: 4, fogFar: 30, rimLight: 2.2 },
+  [`education-${educationData[1].id}`]: { conduitProgress: u.eduUmtc, conduitOpacity: 0.35, eduYear: 2026, fogNear: 4, fogFar: 30, rimLight: 2.4 },
+  skills: { conduitProgress: u.skills, conduitOpacity: 0.45, eduYear: 2026, skillsReveal: 1, rimLight: 2.8, particleSpeed: 0.2 },
   ...Object.fromEntries(
     projectData.map((p, i) => [
       `project-${p.id}`,
-      { conduitProgress: u.projects[i], eduYear: 2026, skillsReveal: 1, projectFocus: i, fogFar: 32, rimLight: 3.2 },
+      { conduitProgress: u.projects[i], conduitOpacity: 0.6, eduYear: 2026, skillsReveal: 1, projectFocus: i, fogFar: 32, rimLight: 3.2 },
     ]),
   ),
-  achievements: { conduitProgress: u.tower, eduYear: 2026, skillsReveal: 1, projectFocus: projectData.length, towerReveal: 1, fogFar: 40, rimLight: 2.8 },
+  achievements: { conduitProgress: u.tower, conduitOpacity: 0.55, eduYear: 2026, skillsReveal: 1, projectFocus: projectData.length, towerReveal: 1, fogFar: 40, rimLight: 2.8 },
   contact: {
     coreExpand: 0.28,
     conduitProgress: 1,
+    conduitOpacity: 0.75,
     eduYear: 2026,
     skillsReveal: 1,
     projectFocus: projectData.length,

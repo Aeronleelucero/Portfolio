@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Color, CylinderGeometry, ShaderMaterial, TorusGeometry, TubeGeometry } from 'three'
+import { Color, CylinderGeometry, ShaderMaterial, TorusGeometry, TubeGeometry, UniformsLib, UniformsUtils } from 'three'
 import { sceneState } from '../../animations/sceneTimeline'
-import { conduitCurve, WORLD } from '../worldLayout'
+import { conduitCurve, curveParamNear, WORLD } from '../worldLayout'
 import { chrome, createSignalMaterial, darkMetal, PALETTE } from '../materials'
 import { runtime } from '../runtime'
 
@@ -29,52 +29,88 @@ function ConduitPort() {
   )
 }
 
+// Arc-length range of the curve that lies on the Education rail. The rail's own
+// progress strip is the journey line there, so the conduit is masked out
+// instead of doubling up and running through the gates.
+const edu = WORLD.education
+const RAIL_GAP = [
+  curveParamNear([edu.railX, edu.railY, edu.yearZ(2019)]),
+  curveParamNear([edu.railX, edu.railY, edu.yearZ(2026)]),
+]
+
 /**
- * The "data conduit" — a thin line threading every station of the journey.
- * The traveled part glows magenta with pulses flowing forward; the road ahead
- * stays a quiet graphite line. Progress is scroll-driven.
+ * The "data conduit" — a fine line connecting every station of the journey.
+ * The traveled part glows a muted violet → magenta with soft pulses; the road
+ * ahead is a faint plum thread. It respects scene fog, fades out near the
+ * camera (so it never becomes a foreground stroke), and its overall opacity is
+ * set per section by the scene timeline.
  */
 export default function Conduit({ segments = 900 }) {
-  const geometry = useMemo(() => new TubeGeometry(conduitCurve, segments, 0.02, 6, false), [segments])
+  const geometry = useMemo(() => new TubeGeometry(conduitCurve, segments, 0.012, 6, false), [segments])
 
   const material = useMemo(
     () =>
       new ShaderMaterial({
         transparent: true,
         depthWrite: false,
-        uniforms: {
-          uProgress: { value: 0 },
-          uTime: { value: 0 },
-          uBase: { value: new Color('#2e2740') },
-          uLit: { value: new Color(PALETTE.accent) },
-          uHead: { value: new Color('#eaa8f0') },
-        },
+        fog: true,
+        uniforms: UniformsUtils.merge([
+          UniformsLib.fog,
+          {
+            uProgress: { value: 0 },
+            uOpacity: { value: 1 },
+            uTime: { value: 0 },
+            uGap: { value: RAIL_GAP },
+            uBase: { value: new Color('#3a2f4f') },
+            uLitA: { value: new Color(PALETTE.violet) },
+            uLitB: { value: new Color(PALETTE.accent) },
+            uHead: { value: new Color('#d9a6e2') },
+          },
+        ]),
         vertexShader: /* glsl */ `
+          #include <fog_pars_vertex>
           varying float vU;
-          varying vec3 vWorld;
+          varying float vCamDist;
           void main() {
             vU = uv.x;
             vec4 wp = modelMatrix * vec4(position, 1.0);
-            vWorld = wp.xyz;
-            gl_Position = projectionMatrix * viewMatrix * wp;
+            vCamDist = length(wp.xyz - cameraPosition);
+            vec4 mvPosition = viewMatrix * wp;
+            gl_Position = projectionMatrix * mvPosition;
+            #include <fog_vertex>
           }
         `,
         fragmentShader: /* glsl */ `
+          #include <fog_pars_fragment>
           uniform float uProgress;
+          uniform float uOpacity;
           uniform float uTime;
+          uniform float uGap[2];
           uniform vec3 uBase;
-          uniform vec3 uLit;
+          uniform vec3 uLitA;
+          uniform vec3 uLitB;
           uniform vec3 uHead;
           varying float vU;
-          varying vec3 vWorld;
+          varying float vCamDist;
           void main() {
             float lit = 1.0 - smoothstep(uProgress - 0.002, uProgress + 0.002, vU);
-            float head = 1.0 - smoothstep(0.0, 0.01, abs(vU - uProgress));
-            float pulse = smoothstep(0.9, 1.0, fract(vU * 140.0 - uTime * 0.5)) * lit;
-            vec3 col = mix(uBase, uLit * 0.75, lit) + uLit * pulse * 0.9 + uHead * head * 1.4;
-            float d = length(vWorld - cameraPosition);
-            float alpha = mix(0.55, 1.0, lit) * (1.0 - smoothstep(40.0, 140.0, d) * 0.8);
+            float head = 1.0 - smoothstep(0.0, 0.006, abs(vU - uProgress));
+            float pulse = smoothstep(0.93, 1.0, fract(vU * 120.0 - uTime * 0.4)) * lit;
+            vec3 litCol = mix(uLitA, uLitB, smoothstep(0.0, 1.0, vU)) * 0.62;
+            vec3 col = mix(uBase, litCol, lit) + uLitB * pulse * 0.35 + uHead * head * 0.6;
+
+            float alpha = mix(0.32, 0.85, lit) * uOpacity;
+            // Never a thick foreground stroke: fade out close to the camera.
+            alpha *= smoothstep(3.0, 7.0, vCamDist);
+            // Hidden along the Education rail (the rail's strip is the line there).
+            alpha *= 1.0 - smoothstep(uGap[0] - 0.004, uGap[0], vU) * (1.0 - smoothstep(uGap[1], uGap[1] + 0.004, vU));
+            if (alpha < 0.003) discard;
+
             gl_FragColor = vec4(col, alpha);
+            #include <fog_fragment>
+            #ifdef USE_FOG
+              gl_FragColor.a *= 1.0 - fogFactor; // fade with distance, not just darken
+            #endif
           }
         `,
       }),
@@ -83,6 +119,7 @@ export default function Conduit({ segments = 900 }) {
 
   useFrame((_, delta) => {
     material.uniforms.uProgress.value = sceneState.conduitProgress
+    material.uniforms.uOpacity.value = sceneState.conduitOpacity
     material.uniforms.uTime.value += Math.min(delta, 0.1) * runtime.motion
   })
 

@@ -29,6 +29,8 @@ export default function EducationTimeline() {
   const years = useMemo(() => Array.from({ length: 7 }, (_, i) => 2020 + i), [])
   const tickMaterials = useMemo(() => years.map(() => createSignalMaterial(0)), [years])
   const gateMaterials = useMemo(() => edu.gateYears.map(() => createSignalMaterial(0)), [])
+  // The rail's progress strip is the journey line through Education — kept subtle.
+  const railMaterial = useMemo(() => createSignalMaterial(0), [])
   const geometries = useMemo(
     () => ({
       bar: new BoxGeometry(1, 1, 1),
@@ -55,16 +57,17 @@ export default function EducationTimeline() {
       litRail.current.scale.z = len
       litRail.current.position.z = startZ - len / 2
       litRail.current.visible = year > 2020.01
+      railMaterial.emissiveIntensity = 1.1
     }
 
     years.forEach((y, i) => {
       const on = MathUtils.clamp((year - y) * 2 + 1, 0, 1)
-      tickMaterials[i].emissiveIntensity = on * 2
+      tickMaterials[i].emissiveIntensity = on * 1.2
     })
 
     edu.gateYears.forEach((y, i) => {
       const on = MathUtils.clamp((year - y) * 1.5 + 1, 0, 1)
-      gateMaterials[i].emissiveIntensity = on * 2.4
+      gateMaterials[i].emissiveIntensity = on * 1.6
       const gate = gateRefs.current[i]
       if (gate) {
         const emblem = gate.children[gate.children.length - 1]
@@ -79,7 +82,7 @@ export default function EducationTimeline() {
     <group position={[edu.railX, edu.railY, 0]}>
       {/* Rail */}
       <mesh geometry={geometries.bar} material={darkMetal} position={[0, 0, railCenterZ]} scale={[0.09, 0.05, railLength]} />
-      <mesh ref={litRail} geometry={geometries.bar} material={gateMaterials[0]} position={[0, 0.035, startZ]} scale={[0.035, 0.02, 0.0001]} />
+      <mesh ref={litRail} geometry={geometries.bar} material={railMaterial} position={[0, 0.035, startZ]} scale={[0.028, 0.016, 0.0001]} />
 
       {/* Year ticks */}
       {years.map((y, i) => {
