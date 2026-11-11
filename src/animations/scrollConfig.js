@@ -35,7 +35,9 @@ export const CHAPTERS = [
 
 export const SCROLL_SMOOTHING = {
   // Exponential damping factor for the camera following scroll (higher = snappier).
-  default: 2.6,
+  // ~0.18s time constant: smooths wheel steps without a noticeable catch-up
+  // after scrolling stops (2.6 took over a second to settle).
+  default: 5.5,
   reducedMotion: 14,
 }
 

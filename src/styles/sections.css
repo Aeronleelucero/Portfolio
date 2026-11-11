@@ -81,6 +81,8 @@
   font-size: 0.68rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-align: left;
+  color: inherit;
 }
 
 .hud__line {
@@ -92,6 +94,16 @@
 
 .hud__label {
   color: var(--text);
+}
+
+.hero__hud:hover .hud__line,
+.hero__hud[aria-pressed='true'] .hud__line {
+  background: var(--accent);
+}
+
+.hero__hud:hover .hud__meta,
+.hero__hud[aria-pressed='true'] .hud__meta {
+  color: var(--accent-bright);
 }
 
 .hud__meta {

@@ -13,6 +13,9 @@ const lastProjectZ = projectZ(projectData.length - 1)
  */
 export const WORLD = {
   core: [0, 0, 0],
+  // The conduit's source: a small port beneath the Digital Core, clear of
+  // the shell and rings, so the red line emerges from the sculpture's base.
+  corePort: [0, -3.2, 0],
 
   education: {
     railX: -6,
@@ -27,7 +30,7 @@ export const WORLD = {
   skills: [6.5, 0.4, -40],
 
   // Alternating left / right down the corridor, one per project.
-  projects: projectData.map((_, i) => [i % 2 === 0 ? -4.5 : 4.5, 0, projectZ(i)]),
+  projects: projectData.map((_, i) => [i % 2 === 0 ? -3.8 : 3.8, 0, projectZ(i)]),
 
   // Far enough past the last project that it falls behind the camera.
   achievements: { base: [0, -2.2, lastProjectZ - 26], height: 9, radius: 2.1 },
@@ -36,19 +39,23 @@ export const WORLD = {
 const edu = WORLD.education
 const eduPoint = (year) => [edu.railX, edu.railY, edu.yearZ(year)]
 
+// The conduit runs *beneath* each exhibit rather than through it: along the
+// top of each project plinth and under the skills constellation.
+const PLINTH_TOP_Y = -1.64
+const underSkills = [WORLD.skills[0], -2.2, WORLD.skills[2]]
+
 /** Points the "data conduit" passes through, in journey order. */
 export const CONDUIT_POINTS = [
-  [0, -0.2, 2.5],
-  WORLD.core,
-  [-3.2, -1.4, -5],
+  WORLD.corePort,
+  [-2.8, -2.5, -4.8],
   eduPoint(2019),
   eduPoint(2020),
   eduPoint(2022),
   eduPoint(2026),
   [0, -0.8, -34],
-  WORLD.skills,
-  [2, -0.6, -48],
-  ...WORLD.projects,
+  underSkills,
+  [2, -1.4, -48],
+  ...WORLD.projects.map(([x, , z]) => [x, PLINTH_TOP_Y, z]),
   [2.4, -2, lastProjectZ - 12],
   [1.2, -2.2, lastProjectZ - 20],
   WORLD.achievements.base,

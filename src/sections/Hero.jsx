@@ -1,9 +1,13 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { ArrowDown, Download, MapPin } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { profile } from '../data/profile'
 import { gsap, scrollToId } from '../animations/scrollConfig'
 import { useReducedMotion } from '../hooks/useDeviceProfile'
+import { interaction, onCoreUnfoldChange, toggleCoreUnfolded } from '../hooks/interaction'
+
+const useCoreUnfolded = () =>
+  useSyncExternalStore(onCoreUnfoldChange, () => interaction.coreUnfolded, () => false)
 
 const splitChars = (text) =>
   [...text].map((ch, i) => (
@@ -15,6 +19,7 @@ const splitChars = (text) =>
 export default function Hero() {
   const root = useRef(null)
   const reducedMotion = useReducedMotion()
+  const coreUnfolded = useCoreUnfolded()
 
   // Opening title sequence.
   useLayoutEffect(() => {
@@ -65,11 +70,12 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero__hud" aria-hidden="true">
-        <span className="hud__line" />
+      {/* Keyboard / screen-reader equivalent of clicking the 3D core */}
+      <button type="button" className="hero__hud" aria-pressed={coreUnfolded} onClick={toggleCoreUnfolded}>
+        <span className="hud__line" aria-hidden="true" />
         <span className="hud__label">Digital Core</span>
-        <span className="hud__meta">SE · AI · Backend</span>
-      </div>
+        <span className="hud__meta">{coreUnfolded ? 'Click to reassemble' : 'Click to unfold'}</span>
+      </button>
 
       <a
         href="#about"

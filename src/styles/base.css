@@ -126,3 +126,8 @@ svg {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Pointer cursor while hovering the interactive Digital Core (set from 3D hit-testing) */
+body.core-hover {
+  cursor: pointer;
+}

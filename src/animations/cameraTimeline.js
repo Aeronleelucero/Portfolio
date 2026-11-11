@@ -26,7 +26,7 @@ function projectFrames(i) {
       position: vec(p, side * 0.6, 1.4, 10.5),
       target: vec(p, side * 2.4, 0.1, 0),
       fov: 38,
-      roll: side * 0.015,
+      roll: 0, // no alternating bank between projects
     },
     mobile: {
       position: vec(p, 0, 2.4, 11.5),
@@ -126,7 +126,9 @@ const toRig = (kf) => ({
 export function createCameraTimeline(isMobile) {
   const frames = getCameraKeyframes(isMobile)
   const rig = toRig(frames[0])
-  const timeline = gsap.timeline({ paused: true, defaults: { duration: 1, ease: 'power2.inOut' } })
+  // sine.inOut keeps peak speed mid-transition ~1.6× the average (power2.inOut
+  // peaked at 3×, which made project-to-project moves feel rushed).
+  const timeline = gsap.timeline({ paused: true, defaults: { duration: 1, ease: 'sine.inOut' } })
   for (let i = 1; i < frames.length; i++) {
     timeline.to(rig, toRig(frames[i]), i - 1)
   }

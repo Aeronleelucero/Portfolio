@@ -82,6 +82,17 @@ export default function RecognitionExhibit({ items, active, onSelect, onOpen, op
     }
   }
 
+  // Turned side frames project as trapezoids, so a click can land on the
+  // stage just outside one. Treat stage clicks beside the front frame as
+  // "previous" (left) / "next" (right).
+  const onStageClick = (e) => {
+    if (e.target !== e.currentTarget || n < 2) return
+    const front = e.currentTarget.querySelector('.xcard.is-front')?.getBoundingClientRect()
+    if (!front) return
+    if (e.clientX > front.right) go(1)
+    else if (e.clientX < front.left) go(-1)
+  }
+
   const onPointerDown = (e) => {
     if (e.pointerType !== 'mouse') swipe.current = e.clientX
   }
@@ -105,7 +116,7 @@ export default function RecognitionExhibit({ items, active, onSelect, onOpen, op
         onPointerUp={onPointerUp}
       >
         <div ref={parallax} className="exhibit__parallax">
-          <div className="exhibit__stage">
+          <div className="exhibit__stage" onClick={onStageClick}>
             <span className="exhibit__floor" aria-hidden="true" />
             {items.map((item, i) => {
               const d = offsetOf(i, active, n)

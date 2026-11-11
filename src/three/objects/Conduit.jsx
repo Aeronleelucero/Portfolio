@@ -1,10 +1,33 @@
 import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Color, ShaderMaterial, TubeGeometry } from 'three'
+import { Color, CylinderGeometry, ShaderMaterial, TorusGeometry, TubeGeometry } from 'three'
 import { sceneState } from '../../animations/sceneTimeline'
-import { conduitCurve } from '../worldLayout'
-import { PALETTE } from '../materials'
+import { conduitCurve, WORLD } from '../worldLayout'
+import { chrome, createSignalMaterial, darkMetal, PALETTE } from '../materials'
 import { runtime } from '../runtime'
+
+/**
+ * Where the conduit begins: a small socket beneath the Digital Core, so the
+ * red line visibly emerges from the sculpture's base instead of floating.
+ */
+function ConduitPort() {
+  const parts = useMemo(
+    () => ({
+      socket: new CylinderGeometry(0.34, 0.4, 0.1, 40),
+      rim: new TorusGeometry(0.36, 0.014, 8, 64),
+      signal: new TorusGeometry(0.22, 0.012, 8, 48),
+      glow: createSignalMaterial(1.8),
+    }),
+    [],
+  )
+  return (
+    <group position={WORLD.corePort}>
+      <mesh geometry={parts.socket} material={darkMetal} position={[0, -0.05, 0]} />
+      <mesh geometry={parts.rim} material={chrome} rotation-x={Math.PI / 2} />
+      <mesh geometry={parts.signal} material={parts.glow} position={[0, 0.012, 0]} rotation-x={Math.PI / 2} />
+    </group>
+  )
+}
 
 /**
  * The "data conduit" — a thin line threading every station of the journey.
@@ -63,5 +86,10 @@ export default function Conduit({ segments = 900 }) {
     material.uniforms.uTime.value += Math.min(delta, 0.1) * runtime.motion
   })
 
-  return <mesh geometry={geometry} material={material} frustumCulled={false} />
+  return (
+    <>
+      <mesh geometry={geometry} material={material} frustumCulled={false} />
+      <ConduitPort />
+    </>
+  )
 }
