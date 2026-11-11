@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import SectionHeader from '../components/ui/SectionHeader'
-import { achievements, ACHIEVEMENT_TYPE_LABELS } from '../data/achievements'
+import RecognitionGallery from '../components/recognition/RecognitionGallery'
 import { useReveal } from '../hooks/useReveal'
 
 export default function Achievements() {
@@ -11,26 +11,16 @@ export default function Achievements() {
     <section id="achievements" ref={root} className="section" aria-labelledby="achievements-title">
       <div className="station station--left" data-station="achievements">
         <div className="container">
-          <div className="panel panel--wide">
+          <div className="panel panel--gallery">
             <SectionHeader
               id="achievements-title"
               number="06"
-              label="Milestones"
-              title="Milestones along the way."
+              label="Certifications & Achievements"
+              title="Credentials & Recognition."
+              lead="A collection of certifications, competitions, and experiences that represent my continuous learning and professional development."
             />
-            <ol className="timeline">
-              {achievements.map((a) => (
-                <li key={a.id} className="timeline__item" data-reveal>
-                  <span className="timeline__marker">{a.marker}</span>
-                  <div className="timeline__body">
-                    <p className="timeline__type">{ACHIEVEMENT_TYPE_LABELS[a.type]}</p>
-                    <h3 className="timeline__title">{a.title}</h3>
-                    <p className="timeline__org">{a.organization}</p>
-                    <p className="timeline__desc">{a.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+
+            <RecognitionGallery />
           </div>
         </div>
       </div>

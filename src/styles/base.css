@@ -25,6 +25,7 @@ body {
   overflow-x: hidden;
 }
 
+body.modal-open,
 body.menu-open {
   overflow: hidden;
 }

@@ -9,6 +9,7 @@ export const interaction = {
   pointer: { x: 0, y: 0 }, // normalized -1..1
   activeSkill: null, // skill category id or null
   activeProject: null, // project id or null
+  activeRecognition: null, // recognition record id or null (exhibition focus)
 }
 
 let listening = false
@@ -33,4 +34,8 @@ export const setActiveSkill = (id) => {
 
 export const setActiveProject = (id) => {
   interaction.activeProject = id
+}
+
+export const setActiveRecognition = (id) => {
+  interaction.activeRecognition = id
 }

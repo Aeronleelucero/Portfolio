@@ -29,7 +29,7 @@ export const CHAPTERS = [
   { id: 'education', label: 'Education', number: '03' },
   { id: 'skills', label: 'Expertise', number: '04' },
   { id: 'projects', label: 'Projects', number: '05' },
-  { id: 'achievements', label: 'Milestones', number: '06' },
+  { id: 'achievements', label: 'Recognition', number: '06' },
   { id: 'contact', label: 'Contact', number: '07' },
 ]
 

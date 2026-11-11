@@ -190,6 +190,11 @@ main,
   container: contact / inline-size;
 }
 
+.panel--gallery {
+  max-width: 66rem;
+  container: gallery / inline-size;
+}
+
 /* Leave room for the chapter rail on large screens */
 @media (min-width: 1100px) {
   .station--right > .container {
@@ -209,7 +214,8 @@ main,
 
   .panel,
   .panel--wide,
-  .panel--contact {
+  .panel--contact,
+  .panel--gallery {
     max-width: none;
     background: linear-gradient(180deg, rgba(17, 19, 24, 0.84), rgba(17, 19, 24, 0.76));
   }
