@@ -9,6 +9,7 @@ import {
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   Object3D,
+  Quaternion,
   Raycaster,
   Sphere,
   SphereGeometry,
@@ -18,12 +19,13 @@ import {
 } from 'three'
 import { sceneState } from '../../animations/sceneTimeline'
 import { scrollState } from '../../animations/scrollConfig'
-import { interaction, isOverUI, setCoreUnfolded, toggleCoreUnfolded } from '../../hooks/interaction'
+import { clearCoreOverride, interaction, isOverUI, setCoreAuto, toggleCoreUnfolded } from '../../hooks/interaction'
 import { WORLD } from '../worldLayout'
 import { chrome, darkMetal, satinMetal, accentGlow, PALETTE } from '../materials'
 import { runtime } from '../runtime'
 import CoreDust from './CoreDust'
 import CoreFeathers from './CoreFeathers'
+import CoreRing from './CoreRing'
 
 /**
  * Builds the core shell: 20 icosahedron faces as separate bevelled plates.
@@ -114,12 +116,14 @@ function createFacetMaterial(uniforms) {
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uExpand = uniforms.uExpand
     shader.uniforms.uTime = uniforms.uTime
+    shader.uniforms.uView = uniforms.uView
     shader.vertexShader = shader.vertexShader
       .replace(
         '#include <common>',
         `#include <common>
         uniform float uExpand;
         uniform float uTime;
+        uniform vec3 uView; // direction to the camera, in shell-local space
         attribute vec3 aDir;
         attribute float aRand;`,
       )
@@ -130,7 +134,15 @@ function createFacetMaterial(uniforms) {
         // distance, so the shell reads as one sculpture, not scattered shards.
         float spread = uExpand * (0.58 + aRand * 0.08);
         float hover = sin(uTime * 0.9 + aRand * 6.2831) * 0.012 * uExpand;
-        transformed += aDir * (spread + hover);`,
+        // Iris: plates facing the camera also slide sideways (perpendicular to
+        // the view) so the inner ring is revealed rather than covered.
+        vec3 view = normalize(uView);
+        float facing = dot(aDir, view);
+        vec3 lateral = aDir - view * facing;
+        float lateralLen = length(lateral);
+        lateral = lateralLen > 0.001 ? lateral / lateralLen : normalize(cross(view, vec3(0.0, 1.0, 0.001)));
+        float front = smoothstep(0.15, 0.85, facing);
+        transformed += aDir * (spread + hover) + lateral * front * uExpand * 1.35;`,
       )
   }
   return material
@@ -202,6 +214,9 @@ function Beads({ radius }) {
 const HIT_RADIUS = 1.6
 const MAX_INTERACT_DISTANCE = 26
 const DRAG_TOLERANCE = 8 // px between pointerdown and click
+// Plate spread (shader units): scroll-opened at About vs. manually unfolded.
+const AUTO_SPREAD = 0.6
+const MANUAL_SPREAD = 0.85
 
 export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
   const root = useRef()
@@ -213,17 +228,21 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
   const invalidate = useThree((s) => s.invalidate)
 
   // Animated interaction amounts (0..1), damped every frame.
-  const anim = useRef({ hover: 0, unfold: 0, scrollSpin: 0 })
+  const anim = useRef({ hover: 0, unfold: 0, plates: 0, scrollSpin: 0 })
+  const reveal = useRef(0) // 0 sealed … 1 open — drives the inner ring
+  const station = useRef(null)
   const hovered = useRef(false)
   const pick = useMemo(
     () => ({ ray: new Raycaster(), ndc: new Vector2(), sphere: new Sphere(new Vector3(), HIT_RADIUS), center: new Vector3() }),
     [],
   )
 
-  const uniforms = useMemo(() => ({ uExpand: { value: 0 }, uTime: { value: 0 } }), [])
+  const uniforms = useMemo(() => ({ uExpand: { value: 0 }, uTime: { value: 0 }, uView: { value: new Vector3(0, 0, 1) } }), [])
+  const viewTmp = useMemo(() => ({ q: new Quaternion(), p: new Vector3() }), [])
   const facetGeometry = useMemo(() => buildFacetGeometry(), [])
   const facetMaterial = useMemo(() => createFacetMaterial(uniforms), [uniforms])
-  const heartGeometry = useMemo(() => new IcosahedronGeometry(0.56, 1), [])
+  // Heart sits inside the inner gyroscope ring (ring track inner edge ≈ 0.5).
+  const heartGeometry = useMemo(() => new IcosahedronGeometry(0.3, 1), [])
   const heartMaterial = useMemo(
     () =>
       new MeshStandardMaterial({
@@ -305,17 +324,34 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
       document.body.classList.toggle('core-hover', isHover)
     }
 
-    // Leaving the core's area returns the sculpture to its original form.
     const s = scrollState.current
-    if (interaction.coreUnfolded && s > 1.6 && s < scrollState.max - 0.6) setCoreUnfolded(false)
 
-    const unfoldTarget = interaction.coreUnfolded ? 1 : 0
+    // Scroll-controlled opening: closed at Hero, open at About, closed again
+    // from Education (sceneState.coreOpen is scrubbed by the scene timeline,
+    // whose input is already damped — so it follows scroll smoothly).
+    const autoOpen = sceneState.coreOpen
+    setCoreAuto(autoOpen > 0.5)
+
+    // A manual click/tap/HUD toggle overrides the scroll state until the
+    // visitor arrives at another section; then scroll control resumes.
+    // (Passing partway toward a section and coming back keeps the choice.)
+    const nearest = Math.round(scrollState.target)
+    if (Math.abs(scrollState.target - nearest) < 0.2) {
+      if (station.current !== null && nearest !== station.current) clearCoreOverride()
+      station.current = nearest
+    }
+
+    const override = interaction.coreOverride
+    const platesTarget = override === null ? autoOpen * AUTO_SPREAD : override ? MANUAL_SPREAD : 0
+    // Scroll mode tracks the (already smoothed) scroll closely; manual toggles ease in.
+    const rate = !motion ? 14 : override === null ? 9 : 2.8
+    a.plates = MathUtils.damp(a.plates, platesTarget, rate, dt)
+    a.unfold = a.plates / MANUAL_SPREAD // shared with the feather plume
     a.hover = MathUtils.damp(a.hover, isHover ? 1 : 0, 6, dt)
-    a.unfold = MathUtils.damp(a.unfold, unfoldTarget, motion ? 2.8 : 14, dt)
+    reveal.current = MathUtils.clamp(a.plates / AUTO_SPREAD, 0, 1)
+    const unfoldTarget = platesTarget / MANUAL_SPREAD
 
-    // Plates move only on interaction (hover parts the seams, click unfolds);
-    // scrolling never displaces the geometry — it only opens the rings.
-    const plates = a.unfold * 0.85 + a.hover * 0.1
+    const plates = a.plates + a.hover * 0.1
     const expand = Math.min(1.1, sceneState.coreExpand + plates)
     uniforms.uExpand.value = plates
     uniforms.uTime.value = t * motion
@@ -334,9 +370,15 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
       // Idle spin, a touch livelier on hover, plus a gentle scroll-linked turn
       // (scrollState.current is already damped, so it never jumps).
       const spin = s * 0.6 * motion
-      shell.current.rotation.y += dt * (0.12 + a.hover * 0.18) * motion + (spin - a.scrollSpin)
-      shell.current.rotation.x += dt * 0.05 * motion
+      // The spin calms while open so the iris arrangement holds still.
+      const calm = 1 - reveal.current * 0.9
+      shell.current.rotation.y += (dt * (0.12 + a.hover * 0.18) * motion + (spin - a.scrollSpin)) * calm
+      shell.current.rotation.x += dt * 0.05 * motion * calm
       a.scrollSpin = spin
+
+      // Camera direction in shell-local space for the iris opening.
+      shell.current.getWorldPosition(viewTmp.p)
+      uniforms.uView.value.subVectors(camera.position, viewTmp.p).applyQuaternion(shell.current.getWorldQuaternion(viewTmp.q).invert())
     }
 
     if (heart.current) {
@@ -344,7 +386,8 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
       heart.current.scale.setScalar((1 + pulse * 0.04) * (1 + plates * 0.1))
       heartMaterial.emissiveIntensity = 1.4 + plates * 0.5 + a.hover * 0.7 + pulse * 0.2
     }
-    if (light.current) light.current.intensity = 3.5 + plates * 3 + a.hover * 1.8
+    // Kept moderate when open so the plates' inner faces don't read as shards.
+    if (light.current) light.current.intensity = 3.2 + reveal.current * 1.6 + a.hover * 1.8
 
     ringRefs.current.forEach((ring, i) => {
       if (!ring) return
@@ -369,6 +412,7 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
         <mesh geometry={facetGeometry} material={facetMaterial} />
         <mesh ref={heart} geometry={heartGeometry} material={heartMaterial} />
       </group>
+      <CoreRing reveal={reveal} />
       <pointLight ref={light} color={PALETTE.accent} intensity={3.5} distance={7} decay={2} />
 
       {RING_SPECS.map((spec, i) => (

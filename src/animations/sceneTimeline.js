@@ -9,6 +9,7 @@ import { WORLD, curveParamNear } from '../three/worldLayout'
  * read these values inside `useFrame`, so updates never trigger React renders.
  */
 export const sceneState = {
+  coreOpen: 0, // scroll-driven shell opening: closed at Hero, open at About, closed again from Education
   coreExpand: 0, // scroll-driven ring opening around the Digital Core (plates move only on click/hover)
   keyLight: 1.6, // white key light intensity
   rimLight: 2.6, // red rim light intensity
@@ -37,6 +38,7 @@ const u = {
 }
 
 const base = {
+  coreOpen: 0,
   coreExpand: 0.25,
   keyLight: 1.6,
   rimLight: 2.6,
@@ -53,7 +55,7 @@ const base = {
 /** One scene keyframe per station (missing values inherit from `base`). */
 const KEYFRAMES = {
   hero: { coreExpand: 0, conduitProgress: u.core * 0.6, conduitOpacity: 0.85, eduYear: 2019, fogNear: 10, fogFar: 24, rimLight: 2.4 },
-  about: { coreExpand: 0.32, conduitProgress: u.core, conduitOpacity: 0.7, eduYear: 2019, fogNear: 6, fogFar: 36, rimLight: 3.6, particleSpeed: 0.18 },
+  about: { coreOpen: 1, coreExpand: 0.32, conduitProgress: u.core, conduitOpacity: 0.7, eduYear: 2019, fogNear: 6, fogFar: 36, rimLight: 3.6, particleSpeed: 0.18 },
   [`education-${educationData[0].id}`]: { conduitProgress: u.eduSti, conduitOpacity: 0.35, eduYear: 2022, fogNear: 4, fogFar: 30, rimLight: 2.2 },
   [`education-${educationData[1].id}`]: { conduitProgress: u.eduUmtc, conduitOpacity: 0.35, eduYear: 2026, fogNear: 4, fogFar: 30, rimLight: 2.4 },
   skills: { conduitProgress: u.skills, conduitOpacity: 0.45, eduYear: 2026, skillsReveal: 1, rimLight: 2.8, particleSpeed: 0.2 },

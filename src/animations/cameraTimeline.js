@@ -43,7 +43,8 @@ const KEYFRAMES = {
     mobile: { position: [0, 1.2, 15], target: [0, -3, 0], fov: 50, roll: 0 },
   },
   about: {
-    desktop: { position: vec(core, -5.5, 2.2, 8.5), target: vec(core, 2.4, 0.2, 0.4), fov: 36, roll: -0.04 },
+    // Target sits further right so the core (and its opened inner ring) clears the wide About panel.
+    desktop: { position: vec(core, -5.5, 2.2, 8.5), target: vec(core, 3.6, 0.2, 0.4), fov: 36, roll: -0.04 },
     mobile: { position: vec(core, -3.6, 2.4, 13), target: vec(core, 0, -2.8, 0), fov: 50, roll: 0 },
   },
   [`education-${educationData[0].id}`]: {

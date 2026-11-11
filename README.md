@@ -10,7 +10,7 @@ holds a continuous world; scrolling flies the camera from station to station:
 | Chapter | 3D station |
 | --- | --- |
 | 01 Introduction | **Digital Core**: iridescent faceted shell, magenta heart, three orbital rings and a layered plume of iridescent feathers; tilts toward the pointer, glows on hover, and unfolds into an exploded view on click (or via the hero's "Digital Core" button) |
-| 02 About | Portrait and introduction; the core splits open, rings spread |
+| 02 About | Portrait and introduction; the core opens like an iris to reveal its illuminated inner gyroscope ring, and closes again as you scroll on (a click overrides this until you reach another section) |
 | 03 Education | A rail of years with gates at 2020 / 2022 / 2026 that light up as you travel through time |
 | 04 Expertise | A constellation: one node per category, one satellite per technology. Hover or select a category to bring it forward |
 | 05 Projects | One plinth per project with a bespoke emblem: scanning voxel QR (QR Attendance), pose skeleton (HERD-VISION), inventory rack (PAWS4PALS), record cards (Student Information System), shopping cart (CarMaLuTao) |

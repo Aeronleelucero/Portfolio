@@ -12,7 +12,12 @@ export const interaction = {
   activeRecognition: null, // recognition record id or null (exhibition focus)
   pointerOverUI: false, // true while the pointer is over readable/interactive HTML
   pointerType: 'mouse', // last pointer type: 'mouse' | 'touch' | 'pen'
-  coreUnfolded: false, // Digital Core unfold state (click / tap / HUD button)
+  // Digital Core open state. Scroll opens it automatically at About (coreAuto);
+  // a click / tap / HUD press sets a manual override that lasts until the
+  // visitor scrolls to another section. coreUnfolded = the effective state.
+  coreAuto: false,
+  coreOverride: null, // null | true | false
+  coreUnfolded: false,
 }
 
 /**
@@ -31,12 +36,29 @@ export const onCoreUnfoldChange = (fn) => {
   listeners.add(fn)
   return () => listeners.delete(fn)
 }
-export const setCoreUnfolded = (value) => {
+const syncCoreUnfolded = () => {
+  const value = interaction.coreOverride ?? interaction.coreAuto
   if (interaction.coreUnfolded === value) return
   interaction.coreUnfolded = value
   listeners.forEach((fn) => fn(value))
 }
-export const toggleCoreUnfolded = () => setCoreUnfolded(!interaction.coreUnfolded)
+/** Scroll-driven state (set by the 3D scene when crossing the About threshold). */
+export const setCoreAuto = (value) => {
+  if (interaction.coreAuto === value) return
+  interaction.coreAuto = value
+  syncCoreUnfolded()
+}
+/** Manual toggle: flips whatever the visitor currently sees. */
+export const toggleCoreUnfolded = () => {
+  interaction.coreOverride = !interaction.coreUnfolded
+  syncCoreUnfolded()
+}
+/** Return to scroll-controlled mode (called when the visitor changes section). */
+export const clearCoreOverride = () => {
+  if (interaction.coreOverride === null) return
+  interaction.coreOverride = null
+  syncCoreUnfolded()
+}
 
 let listening = false
 
