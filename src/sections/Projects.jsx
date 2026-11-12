@@ -1,8 +1,10 @@
-import { useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import SectionHeader from '../components/ui/SectionHeader'
 import TagList from '../components/ui/TagList'
 import InferenceFigure from '../components/ui/InferenceFigure'
+import LivePreviewCard from '../components/live/LivePreviewCard'
+import LiveSiteModal from '../components/live/LiveSiteModal'
 import { GitHubIcon } from '../components/ui/BrandIcons'
 import { projects } from '../data/projects'
 import { setActiveProject } from '../hooks/interaction'
@@ -30,7 +32,11 @@ function ProjectLinks({ links, title }) {
 
 export default function Projects() {
   const root = useRef(null)
+  const liveButton = useRef(null)
+  const [liveOpen, setLiveOpen] = useState(false)
+  const closeLive = useCallback(() => setLiveOpen(false), [])
   useReveal(root)
+  const liveProject = projects.find((p) => p.live)
 
   return (
     <section id="projects" ref={root} className="section" aria-labelledby="projects-title">
@@ -43,7 +49,7 @@ export default function Projects() {
           >
             <div className="container">
               <article
-                className={`panel project ${project.media ? 'project--media' : ''}`}
+                className={`panel project ${project.media ? 'project--media' : ''} ${project.live ? 'project--live' : ''}`}
                 aria-labelledby={`project-${project.id}-title`}
                 onMouseEnter={() => setActiveProject(project.id)}
                 onMouseLeave={() => setActiveProject(null)}
@@ -56,7 +62,10 @@ export default function Projects() {
                     {project.index}
                     <span className="project__of"> / {project.total}</span>
                   </span>
-                  <span className="project__category">{project.category}</span>
+                  <span className="project__category">
+                    {project.featured && <span className="project__featured">Featured</span>}
+                    {project.category}
+                  </span>
                 </div>
                 <h3 id={`project-${project.id}-title`} className="project__title" data-reveal>
                   {project.title}
@@ -69,6 +78,16 @@ export default function Projects() {
                   {project.summary}
                 </p>
 
+                {project.live && (
+                  <LivePreviewCard
+                    ref={liveButton}
+                    live={project.live}
+                    label={project.title}
+                    suspended={liveOpen}
+                    onOpen={() => setLiveOpen(true)}
+                  />
+                )}
+
                 {project.media && (
                   <InferenceFigure
                     src={project.media.src}
@@ -77,11 +96,13 @@ export default function Projects() {
                   />
                 )}
 
-                <ul className="project__highlights" data-reveal>
-                  {project.highlights.map((h) => (
-                    <li key={h}>{h}</li>
-                  ))}
-                </ul>
+                {project.highlights.length > 0 && (
+                  <ul className="project__highlights" data-reveal>
+                    {project.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+                )}
                 <div data-reveal>
                   <TagList items={project.stack} label={`${project.title} technologies`} />
                 </div>
@@ -91,6 +112,15 @@ export default function Projects() {
           </li>
         ))}
       </ol>
+      {liveProject && (
+        <LiveSiteModal
+          open={liveOpen}
+          live={liveProject.live}
+          title={liveProject.title}
+          onClose={closeLive}
+          returnFocusRef={liveButton}
+        />
+      )}
     </section>
   )
 }

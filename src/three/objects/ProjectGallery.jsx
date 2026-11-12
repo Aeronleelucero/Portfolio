@@ -12,6 +12,7 @@ import CardsEmblem from './emblems/CardsEmblem'
 import QREmblem from './emblems/QREmblem'
 import InventoryEmblem from './emblems/InventoryEmblem'
 import CartEmblem from './emblems/CartEmblem'
+import PortalEmblem from './emblems/PortalEmblem'
 
 const EMBLEMS = {
   pose: PoseEmblem,
@@ -19,6 +20,7 @@ const EMBLEMS = {
   qr: QREmblem,
   inventory: InventoryEmblem,
   cart: CartEmblem,
+  portal: PortalEmblem,
 }
 
 function ProjectStation({ project, index, geometries }) {

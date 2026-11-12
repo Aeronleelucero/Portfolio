@@ -1,8 +1,9 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useSyncExternalStore } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
 import { ACESFilmicToneMapping } from 'three'
 import Experience from './Experience'
+import { isSceneSuspended, onSceneSuspendChange } from '../hooks/interaction'
 
 /**
  * The single, persistent WebGL canvas. It sits fixed behind the HTML content
@@ -10,12 +11,14 @@ import Experience from './Experience'
  */
 export default function Scene({ profile }) {
   const [dpr, setDpr] = useState(profile.maxDpr)
+  // Paused while a full-screen live site (Aqua) is open.
+  const suspended = useSyncExternalStore(onSceneSuspendChange, isSceneSuspended, () => false)
 
   return (
     <div className="scene" aria-hidden="true">
       <Canvas
         dpr={[1, dpr]}
-        frameloop={profile.reducedMotion ? 'demand' : 'always'}
+        frameloop={suspended ? 'never' : profile.reducedMotion ? 'demand' : 'always'}
         gl={{
           antialias: profile.tier === 'high',
           powerPreference: 'high-performance',

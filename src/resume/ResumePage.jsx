@@ -83,7 +83,7 @@ export default function ResumePage() {
 
         <section className="r-section" aria-labelledby="r-projects">
           <h2 id="r-projects">Projects</h2>
-          {projects.map((p) => (
+          {projects.filter((p) => p.inResume !== false).map((p) => (
             <article key={p.id} className="r-entry">
               <div className="r-entry__head">
                 <h3>

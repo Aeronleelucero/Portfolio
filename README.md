@@ -13,7 +13,7 @@ holds a continuous world; scrolling flies the camera from station to station:
 | 02 About | Portrait and introduction; the core opens like an iris to reveal its illuminated inner gyroscope ring, and closes again as you scroll on (a click overrides this until you reach another section) |
 | 03 Education | A rail of years with gates at 2020 / 2022 / 2026 that light up as you travel through time |
 | 04 Expertise | A constellation: one node per category, one satellite per technology. Hover or select a category to bring it forward |
-| 05 Projects | One plinth per project with a bespoke emblem: scanning voxel QR (QR Attendance), pose skeleton (HERD-VISION), inventory rack (PAWS4PALS), record cards (Student Information System), shopping cart (CarMaLuTao) |
+| 05 Projects | Featured first: **Aqua**, shown live — hovering its card mounts the deployed site in a scaled iframe; clicking opens a near full-screen live view with *Visit Site*. Then one plinth per project with a bespoke emblem: scanning voxel QR (QR Attendance), pose skeleton (HERD-VISION), inventory rack (PAWS4PALS), record cards (Student Information System), shopping cart (CarMaLuTao) |
 | 06 Milestones | An ascending helix whose nodes light up in sequence |
 | 07 Contact | The camera rewinds over the whole lit path back to the Digital Core |
 

@@ -5,10 +5,33 @@
  * - `emblem`: the 3D visual in src/three/objects/emblems/.
  * - `media`: optional screenshot. `inference` holds overlay annotations and
  *   must come from REAL model output only (see herdVisionInference.js).
+ * - `live`: a deployed site shown as a live iframe preview (hover) and in a
+ *   near full-screen modal (click). Only one project should use this.
+ * - `inResume: false`: shown in the portfolio but not on /resume.html (which
+ *   mirrors the PDF CV).
  */
 import { herdVisionInference } from './herdVisionInference'
 
 export const projects = [
+  {
+    id: 'aqua',
+    featured: true,
+    inResume: false,
+    title: 'Aqua',
+    meta: 'Live WebGL experience',
+    category: 'Interactive 3D Web Experience',
+    summary:
+      'An immersive underwater world featuring realistic animated fish, natural swimming behavior, and interactive exploration.',
+    highlights: [],
+    stack: ['React', 'Three.js', 'React Three Fiber', 'WebGL', 'GSAP'],
+    emblem: 'portal',
+    live: {
+      url: 'https://aqua-theta-umber.vercel.app/',
+      poster: '/images/projects/aqua-poster.webp', // a real frame of the live site
+      title: 'Aqua — a living underwater world',
+    },
+    links: { github: null, demo: 'https://aqua-theta-umber.vercel.app/' },
+  },
   {
     id: 'qr-attendance',
     title: 'QR Attendance System',

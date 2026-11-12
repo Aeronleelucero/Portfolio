@@ -89,3 +89,20 @@ export const setActiveProject = (id) => {
 export const setActiveRecognition = (id) => {
   interaction.activeRecognition = id
 }
+
+/*
+ * Pause the portfolio's own WebGL rendering (e.g. while a full-screen live
+ * site such as Aqua is open), so two heavy WebGL scenes never run at once.
+ */
+const sceneListeners = new Set()
+let sceneSuspended = false
+export const isSceneSuspended = () => sceneSuspended
+export const onSceneSuspendChange = (fn) => {
+  sceneListeners.add(fn)
+  return () => sceneListeners.delete(fn)
+}
+export const setSceneSuspended = (value) => {
+  if (sceneSuspended === value) return
+  sceneSuspended = value
+  sceneListeners.forEach((fn) => fn(value))
+}
