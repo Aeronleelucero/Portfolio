@@ -1,59 +1,65 @@
 :root {
-  /* ---- Palette ----
-     Source colors: Dark Plum #321039 · Midnight Blue #1D3158 · Violet #8750A5
-     Muted Teal #4F8195 · Magenta #B454BC
-     Hierarchy: plum-black backgrounds → midnight secondary surfaces →
-     violet primary accent → magenta highlights/glow → teal contrast accent. */
-  --plum: #321039;
-  --midnight: #1d3158;
-  --violet: #8750a5;
-  --teal: #4f8195;
-  --magenta: #b454bc;
+  /* Midnight Purple / Neon Lavender. Keep the six source colors here;
+     semantic and legacy aliases let every existing component share them. */
+  --bg-primary: #0B0720;
+  --bg-secondary: #25134D;
+  --accent-primary: #6A2FC8;
+  --accent-secondary: #9D71E8;
+  --accent-highlight: #D1B8FF;
+  --text-primary: #F2E9FF;
+
+  --plum: var(--bg-secondary);
+  --midnight: var(--bg-secondary);
+  --violet: var(--accent-primary);
+  --teal: var(--accent-highlight);
+  --magenta: var(--accent-secondary);
 
   /* Channel tokens for translucent colors: rgb(var(--x-rgb) / 0.4) */
-  --bg-rgb: 11 9 16;
-  --ink-rgb: 7 5 11;
-  --shadow-rgb: 3 1 8;
-  --surface-rgb: 21 17 34;
-  --surface-deep-rgb: 14 11 22;
-  --plum-rgb: 50 16 57;
-  --midnight-rgb: 29 49 88;
-  --violet-rgb: 135 80 165;
-  --magenta-rgb: 180 84 188;
-  --teal-rgb: 79 129 149;
-  --sheen-rgb: 196 182 220;
+  --bg-rgb: 11 7 32;
+  --ink-rgb: 11 7 32;
+  --shadow-rgb: 11 7 32;
+  --surface-rgb: 37 19 77;
+  --surface-deep-rgb: 11 7 32;
+  --plum-rgb: 37 19 77;
+  --midnight-rgb: 37 19 77;
+  --violet-rgb: 106 47 200;
+  --magenta-rgb: 157 113 232;
+  --teal-rgb: 209 184 255;
+  --sheen-rgb: 242 233 255;
 
   /* Surfaces */
-  --bg: #0b0910;
-  --bg-ink: #09070d;
-  --surface: #151122;
-  --surface-raised: #1a1527;
+  --bg: var(--bg-primary);
+  --bg-ink: var(--bg-primary);
+  --surface: var(--bg-secondary);
+  --surface-raised: color-mix(in srgb, var(--bg-secondary) 85%, var(--bg-primary));
   --surface-glass: rgb(var(--surface-rgb) / 0.62);
 
-  /* Text (all ≥ 4.5:1 on --bg and on panels) */
-  --text: #f4f1f8;
-  --text-soft: #e2dceb;
-  --text-body: #cdc7d8;
-  --text-2: #a39bb4;
-  --text-3: #8a819b;
+  /* Lavender text stays readable on both source background colors. */
+  --text: var(--text-primary);
+  --text-soft: var(--accent-highlight);
+  --text-body: color-mix(in srgb, var(--text-primary) 82%, var(--accent-highlight));
+  --text-2: color-mix(in srgb, var(--accent-highlight) 70%, var(--accent-secondary));
+  --text-3: color-mix(in srgb, var(--accent-secondary) 65%, var(--accent-highlight));
 
   /* Accents */
-  --accent: var(--violet); /* borders, fills, active states — not small text */
-  --accent-bright: #cd8fd4; /* text-safe violet-magenta tint (≈8:1) */
-  --accent-teal: #7fb0c2; /* text-safe teal tint (≈8.4:1) */
-  --glow: var(--magenta);
-  --gradient-accent: linear-gradient(135deg, #7a4699 0%, #a24aab 100%); /* white text ≥ 5.1:1 */
-  --gradient-line: linear-gradient(90deg, var(--violet), var(--magenta));
+  --accent: var(--accent-primary); /* fills / active indicators, not small text */
+  --accent-bright: var(--accent-highlight);
+  --accent-teal: var(--accent-highlight);
+  --glow: var(--accent-secondary);
+  /* A restrained violet blend keeps small light button labels above 4.5:1. */
+  --accent-hover: color-mix(in srgb, var(--accent-primary) 78%, var(--accent-secondary));
+  --gradient-accent: linear-gradient(135deg, var(--accent-primary), var(--accent-primary));
+  --gradient-line: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
 
   /* Lines */
-  --border: #2b2438;
-  --border-strong: #42395a;
+  --border: rgb(var(--magenta-rgb) / 0.3);
+  --border-strong: rgb(var(--magenta-rgb) / 0.65);
 
-  /* Metallic frames (plum-tinted steel) */
-  --metal-1: #6a6178;
-  --metal-2: #1b1624;
-  --metal-3: #2b2437;
-  --metal-4: #9d93ad;
+  /* Lavender-tinted metallic frames, derived from the same six colors. */
+  --metal-1: color-mix(in srgb, var(--accent-highlight) 45%, var(--bg-secondary));
+  --metal-2: var(--bg-primary);
+  --metal-3: var(--bg-secondary);
+  --metal-4: var(--accent-secondary);
   --metal-frame: linear-gradient(150deg, var(--metal-1) 0%, var(--metal-2) 38%, var(--metal-3) 62%, var(--metal-4) 100%);
 
   /* Typography */

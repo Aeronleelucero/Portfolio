@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { ShaderMaterial } from 'three'
+import { Color, ShaderMaterial } from 'three'
+import { PALETTE } from '../materials'
 
 /**
  * Infinite-feeling floor grid that fades out around the camera, giving the
@@ -11,6 +12,7 @@ export default function GroundGrid({ y = -4.4 }) {
       new ShaderMaterial({
         transparent: true,
         depthWrite: false,
+        uniforms: { uColor: { value: new Color(PALETTE.violet) } },
         vertexShader: /* glsl */ `
           varying vec3 vWorld;
           void main() {
@@ -20,6 +22,7 @@ export default function GroundGrid({ y = -4.4 }) {
           }
         `,
         fragmentShader: /* glsl */ `
+          uniform vec3 uColor;
           varying vec3 vWorld;
           float grid(vec2 p, float size, float width) {
             vec2 c = p / size;
@@ -32,7 +35,7 @@ export default function GroundGrid({ y = -4.4 }) {
             float d = length(vWorld.xz - cameraPosition.xz);
             float fade = 1.0 - smoothstep(6.0, 42.0, d);
             float a = max(minor, major) * fade * 0.5;
-            gl_FragColor = vec4(vec3(0.22, 0.19, 0.31), a);
+            gl_FragColor = vec4(uColor, a);
           }
         `,
       }),

@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useRef, useState } from 'react'
-import { Maximize2, Waves } from 'lucide-react'
+import { Crosshair, Maximize2, Waves } from 'lucide-react'
 
 // The live site renders at a desktop size and is scaled down to the card, so
 // the preview shows the real desktop composition instead of a cramped layout.
@@ -28,6 +28,7 @@ const LivePreviewCard = forwardRef(function LivePreviewCard({ live, label, onOpe
   const [loaded, setLoaded] = useState(false)
   const [inView, setInView] = useState(false)
   const [scale, setScale] = useState(0.4)
+  const HintIcon = live.kind === 'game' ? Crosshair : Waves
 
   const unmount = () => {
     clearTimeout(unmountTimer.current)
@@ -89,7 +90,7 @@ const LivePreviewCard = forwardRef(function LivePreviewCard({ live, label, onOpe
       >
         <div ref={viewport} className="live-card__viewport" aria-hidden="true">
           <img className="live-card__poster" src={live.poster} alt="" width={FRAME_W} height={FRAME_H} loading="lazy" decoding="async" />
-          {mounted && (
+          {mounted && inView && !suspended && (
             <iframe
               className="live-card__frame"
               src={live.url}
@@ -112,8 +113,8 @@ const LivePreviewCard = forwardRef(function LivePreviewCard({ live, label, onOpe
           {mounted && !loaded ? 'Loading live site…' : 'Live site'}
         </span>
         <span className="live-card__hint" aria-hidden="true">
-          <Waves size={14} strokeWidth={1.7} />
-          <span className="live-card__hint-mouse">Hover to preview · click to dive in</span>
+          <HintIcon size={14} strokeWidth={1.7} />
+          <span className="live-card__hint-mouse">Hover to preview · {live.openHint ?? 'click to dive in'}</span>
           <span className="live-card__hint-touch">Tap to open live</span>
           <Maximize2 size={13} strokeWidth={1.7} />
         </span>

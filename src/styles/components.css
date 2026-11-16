@@ -26,6 +26,7 @@
 }
 
 .section-title {
+  color: var(--accent-highlight);
   margin-top: 1.1rem;
   font-family: var(--font-display);
   font-stretch: 112%;
@@ -69,17 +70,18 @@
 }
 
 .btn--primary {
-  background: var(--gradient-accent);
-  color: #fff;
+  background: var(--accent-primary);
+  color: var(--text-primary);
   box-shadow: 0 10px 28px -14px rgb(var(--magenta-rgb) / 0.7);
   transition:
+    background-color var(--dur) var(--ease-out),
     box-shadow var(--dur) var(--ease-out),
     filter var(--dur);
 }
 
-/* Hover stays white-text safe (≥ 5.1:1): brighter start stop + magenta glow */
+/* Violet hover remains light-text safe; the brighter lavender is in the glow. */
 .btn--primary:hover {
-  background: linear-gradient(135deg, var(--violet) 0%, #a24aab 100%);
+  background: var(--accent-hover);
   box-shadow:
     0 14px 34px -12px rgb(var(--magenta-rgb) / 0.85),
     0 0 0 1px rgb(var(--magenta-rgb) / 0.5);
@@ -90,13 +92,14 @@
 }
 
 .btn--ghost {
-  border-color: var(--border-strong);
+  border-color: var(--accent-secondary);
   color: var(--text);
   background: rgb(var(--surface-rgb) / 0.4);
 }
 
 .btn--ghost:hover {
-  border-color: var(--text-2);
+  border-color: var(--accent-highlight);
+  background: rgb(var(--violet-rgb) / 0.15);
 }
 
 .btn--ghost:hover .btn__icon {
@@ -138,7 +141,7 @@
 
 .link-pill:hover {
   border-color: var(--accent);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* ---------- Navigation ---------- */
@@ -255,6 +258,7 @@
 }
 
 .nav__link.is-active::after {
+  background: var(--accent-primary);
   transform: scaleX(1);
 }
 

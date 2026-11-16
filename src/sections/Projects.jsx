@@ -33,10 +33,9 @@ function ProjectLinks({ links, title }) {
 export default function Projects() {
   const root = useRef(null)
   const liveButton = useRef(null)
-  const [liveOpen, setLiveOpen] = useState(false)
-  const closeLive = useCallback(() => setLiveOpen(false), [])
+  const [liveProject, setLiveProject] = useState(null)
+  const closeLive = useCallback(() => setLiveProject(null), [])
   useReveal(root)
-  const liveProject = projects.find((p) => p.live)
 
   return (
     <section id="projects" ref={root} className="section" aria-labelledby="projects-title">
@@ -80,11 +79,13 @@ export default function Projects() {
 
                 {project.live && (
                   <LivePreviewCard
-                    ref={liveButton}
                     live={project.live}
                     label={project.title}
-                    suspended={liveOpen}
-                    onOpen={() => setLiveOpen(true)}
+                    suspended={Boolean(liveProject)}
+                    onOpen={(event) => {
+                      liveButton.current = event.currentTarget
+                      setLiveProject(project)
+                    }}
                   />
                 )}
 
@@ -112,15 +113,13 @@ export default function Projects() {
           </li>
         ))}
       </ol>
-      {liveProject && (
-        <LiveSiteModal
-          open={liveOpen}
-          live={liveProject.live}
-          title={liveProject.title}
-          onClose={closeLive}
-          returnFocusRef={liveButton}
-        />
-      )}
+      <LiveSiteModal
+        open={Boolean(liveProject)}
+        live={liveProject?.live}
+        title={liveProject?.title}
+        onClose={closeLive}
+        returnFocusRef={liveButton}
+      />
     </section>
   )
 }

@@ -102,7 +102,7 @@ function createFacetMaterial(uniforms) {
   // Lavender steel with a thin-film iridescent clearcoat: plates shift
   // between violet and teal as the core turns.
   const material = new MeshPhysicalMaterial({
-    color: '#e4dfec',
+    color: PALETTE.text,
     metalness: 1,
     roughness: 0.22,
     envMapIntensity: 1.4,
@@ -246,7 +246,7 @@ export default function DigitalCore({ particleCount = 200, quality = 'high' }) {
   const heartMaterial = useMemo(
     () =>
       new MeshStandardMaterial({
-        color: '#12041a',
+        color: PALETTE.bg,
         emissive: PALETTE.accent,
         emissiveIntensity: 1.5,
         roughness: 0.35,

@@ -6,7 +6,7 @@
  * - `media`: optional screenshot. `inference` holds overlay annotations and
  *   must come from REAL model output only (see herdVisionInference.js).
  * - `live`: a deployed site shown as a live iframe preview (hover) and in a
- *   near full-screen modal (click). Only one project should use this.
+ *   near full-screen modal (click), shared by the featured live projects.
  * - `inResume: false`: shown in the portfolio but not on /resume.html (which
  *   mirrors the PDF CV).
  */
@@ -31,6 +31,30 @@ export const projects = [
       title: 'Aqua — a living underwater world',
     },
     links: { github: null, demo: 'https://aqua-theta-umber.vercel.app/' },
+  },
+  {
+    id: 'operation-blackout',
+    featured: true,
+    inResume: false,
+    title: 'Operation Blackout',
+    meta: 'Live multiplayer browser game',
+    category: 'Interactive 3D Web Experience / Browser Game',
+    summary:
+      'An immersive, futuristic browser-based experience featuring an interactive command dashboard, real-time gameplay elements, and a visually engaging interface.',
+    highlights: [],
+    // Verified in the separate Operation-Blackout checkout and its deployed bundle.
+    stack: ['JavaScript', 'Three.js', 'WebGL', 'WebRTC', 'PeerJS', 'Vite'],
+    emblem: 'blackout',
+    live: {
+      url: 'https://operation-blackout-lake.vercel.app/',
+      poster: '/images/projects/operation-blackout-poster.webp',
+      title: 'Operation Blackout — enter the Foundry',
+      kind: 'game',
+      openHint: 'click to enter',
+      pointerLock: true,
+      allow: 'fullscreen; clipboard-write',
+    },
+    links: { github: null, demo: 'https://operation-blackout-lake.vercel.app/' },
   },
   {
     id: 'qr-attendance',
