@@ -6,11 +6,16 @@ import { setSceneSuspended } from '../../hooks/interaction'
  * Near full-screen view of a live deployed site (native <dialog>):
  * focus moves to the close button, Escape and backdrop clicks close it, page
  * scrolling is locked, and the portfolio's own 3D scene pauses meanwhile.
+ * Focus guards keep tab navigation inside the dialog across iframe boundaries.
+ * Escape inside a cross-origin iframe cannot be handled reliably by the parent;
+ * the persistent header controls remain available outside the embedded site.
  * On close, focus returns to `returnFocusRef`.
  */
 export default function LiveSiteModal({ open, live, title, onClose, returnFocusRef }) {
   const dialog = useRef(null)
   const closeButton = useRef(null)
+  const visitButton = useRef(null)
+  const frame = useRef(null)
 
   useEffect(() => {
     const d = dialog.current
@@ -18,7 +23,7 @@ export default function LiveSiteModal({ open, live, title, onClose, returnFocusR
     if (open && !d.open) {
       d.showModal()
       // showModal() focuses the first focusable element; start on Close instead.
-      closeButton.current?.focus()
+      closeButton.current?.focus({ preventScroll: true })
       document.body.classList.add('modal-open')
       setSceneSuspended(true)
     } else if (!open && d.open) {
@@ -57,6 +62,13 @@ export default function LiveSiteModal({ open, live, title, onClose, returnFocusR
     if (e.target === dialog.current) finishClose()
   }
 
+  const onVisitKeyDown = (e) => {
+    if (e.key === 'Tab' && e.shiftKey) {
+      e.preventDefault()
+      frame.current?.focus({ preventScroll: true })
+    }
+  }
+
   return (
     <dialog ref={dialog} className="live-modal" aria-labelledby="live-modal-title" onClick={onBackdrop}>
       {open && (
@@ -70,7 +82,7 @@ export default function LiveSiteModal({ open, live, title, onClose, returnFocusR
               <span className="live-modal__sub">{live.title.replace(/^[^—]*—\s*/, '')}</span>
             </div>
             <div className="live-modal__actions">
-              <a className="btn btn--primary live-modal__visit" href={live.url} target="_blank" rel="noopener noreferrer">
+              <a ref={visitButton} className="btn btn--primary live-modal__visit" href={live.url} target="_blank" rel="noopener noreferrer" onKeyDown={onVisitKeyDown}>
                 <span className="btn__label">Visit Site</span>
                 <ExternalLink className="btn__icon" size={16} strokeWidth={1.7} aria-hidden="true" />
                 <span className="sr-only"> (opens in a new tab)</span>
@@ -82,13 +94,17 @@ export default function LiveSiteModal({ open, live, title, onClose, returnFocusR
             </div>
           </header>
           <iframe
+            ref={frame}
             className="live-modal__frame"
             src={live.url}
             title={live.title}
             referrerPolicy="strict-origin-when-cross-origin"
-            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-            allow="fullscreen"
+            sandbox={`allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox${live.pointerLock ? ' allow-pointer-lock' : ''}`}
+            allow={live.allow ?? 'fullscreen'}
           />
+          {/* Native dialogs can tab into browser chrome after a cross-origin
+              frame. Wrap focus without reading the frame's document. */}
+          <span className="sr-only" tabIndex={0} onFocus={() => visitButton.current?.focus({ preventScroll: true })} />
         </div>
       )}
     </dialog>
