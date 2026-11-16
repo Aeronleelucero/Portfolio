@@ -17,19 +17,28 @@ holds a continuous world; scrolling flies the camera from station to station:
 | 06 Milestones | An ascending helix whose nodes light up in sequence |
 | 07 Contact | The camera rewinds over the whole lit path back to the Digital Core |
 
-A magenta "data conduit" rises from a port beneath the Digital Core and runs beneath every station (along the plinths, under the constellation), lighting up behind you as you go.
+A violet-to-lavender "data conduit" rises from a port beneath the Digital Core and runs beneath every station (along the plinths, under the constellation), lighting up behind you as you go.
 
 ## Design system
 
-Palette: Dark Plum `#321039` · Midnight Blue `#1D3158` · Violet `#8750A5` ·
-Muted Teal `#4F8195` · Magenta `#B454BC` — plum-black backgrounds, midnight
-secondary surfaces, violet primary accent, magenta highlights/glow, teal as the
-cool contrast accent. Text colors meet WCAG AA (≥ 4.5:1).
+Palette: Midnight Purple `#0B0720` · Deep Purple `#25134D` · Electric Purple
+`#6A2FC8` · Soft Violet `#9D71E8` · Neon Lavender `#D1B8FF` · Light Text
+`#F2E9FF`. Dark glass surfaces and restrained violet lighting retain the
+portfolio's existing layout and animations.
 
-- HTML: all colors are tokens in `src/styles/tokens.css` (with `--*-rgb`
-  channel tokens for translucency).
-- 3D: `PALETTE` and shared materials in `src/three/materials.js`; lighting and
-  reflections in `src/three/Environment.jsx`.
+- HTML: six source tokens in `src/styles/tokens.css`: `--bg-primary`,
+  `--bg-secondary`, `--accent-primary`, `--accent-secondary`,
+  `--accent-highlight`, and `--text-primary`. Existing semantic and RGB aliases
+  consume these colors; muted text, frames and hover fills use derived tones.
+- Primary button labels retain at least 4.5:1 contrast in normal and hover states;
+  lighter lavender is used for headings, navigation and keyboard focus.
+- 3D: the matching `THEME` / `PALETTE` in `src/three/materials.js` colors shared
+  metals, glass, glow and particles. Existing lights in `Environment.jsx` use
+  violet and lavender, with unchanged positions, intensities and render passes.
+  The plume, conduit and floor grid share that palette. No bloom is added.
+- Live project content keeps its own colors: no tinting filter or shade covers
+  Aqua or Operation Blackout. Only the surrounding card and modal are themed.
+- The printable resume retains its separate light-on-paper style.
 
 ## Getting started
 

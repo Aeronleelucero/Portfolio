@@ -40,7 +40,7 @@ const RAIL_GAP = [
 
 /**
  * The "data conduit" — a fine line connecting every station of the journey.
- * The traveled part glows a muted violet → magenta with soft pulses; the road
+ * The traveled part glows a muted violet → lavender with soft pulses; the road
  * ahead is a faint plum thread. It respects scene fog, fades out near the
  * camera (so it never becomes a foreground stroke), and its overall opacity is
  * set per section by the scene timeline.
@@ -61,10 +61,10 @@ export default function Conduit({ segments = 900 }) {
             uOpacity: { value: 1 },
             uTime: { value: 0 },
             uGap: { value: RAIL_GAP },
-            uBase: { value: new Color('#3a2f4f') },
+            uBase: { value: new Color(PALETTE.surface) },
             uLitA: { value: new Color(PALETTE.violet) },
             uLitB: { value: new Color(PALETTE.accent) },
-            uHead: { value: new Color('#d9a6e2') },
+            uHead: { value: new Color(PALETTE.teal) },
           },
         ]),
         vertexShader: /* glsl */ `

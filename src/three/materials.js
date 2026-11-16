@@ -11,38 +11,48 @@ import {
  * Shared materials. Re-using instances keeps the number of shader programs
  * and GPU state switches low across the whole scene.
  */
+// Mirrors the six source tokens in styles/tokens.css. Color changes do not add
+// render passes, lights or geometry; existing materials keep their properties.
+const THEME = {
+  background: '#0B0720',
+  surface: '#25134D',
+  primary: '#6A2FC8',
+  secondary: '#9D71E8',
+  highlight: '#D1B8FF',
+  text: '#F2E9FF',
+}
+
 export const PALETTE = {
-  bg: '#0B0910',
-  surface: '#151122',
-  text: '#F4F1F8',
-  muted: '#A39BB4',
-  // Glow / emissive highlight (magenta); violet for rim light; teal as the cool counterpoint.
-  accent: '#B454BC',
-  violet: '#8750A5',
-  teal: '#4F8195',
-  plum: '#321039',
-  midnight: '#1D3158',
-  border: '#2B2438',
+  bg: THEME.background,
+  surface: THEME.surface,
+  text: THEME.text,
+  muted: THEME.highlight,
+  accent: THEME.secondary,
+  violet: THEME.primary,
+  teal: THEME.highlight, // legacy name: the cool counter-light is now lavender
+  plum: THEME.surface,
+  midnight: THEME.surface,
+  border: THEME.primary,
 }
 
 export const accentColor = new Color(PALETTE.accent)
 
 export const chrome = new MeshStandardMaterial({
-  color: '#e7e3ef', // lavender-tinted steel
+  color: PALETTE.text,
   metalness: 1,
   roughness: 0.22,
   envMapIntensity: 1.2,
 })
 
 export const satinMetal = new MeshStandardMaterial({
-  color: '#a69db6',
+  color: PALETTE.muted,
   metalness: 1,
   roughness: 0.38,
   envMapIntensity: 1,
 })
 
 export const darkMetal = new MeshStandardMaterial({
-  color: '#2a2434',
+  color: PALETTE.surface,
   metalness: 0.9,
   roughness: 0.42,
   envMapIntensity: 0.8,
@@ -50,7 +60,7 @@ export const darkMetal = new MeshStandardMaterial({
 
 /** Fake glass: reflective clearcoat without the cost of a transmission pass. */
 export const glass = new MeshPhysicalMaterial({
-  color: '#b7a8d6',
+  color: PALETTE.teal,
   metalness: 0,
   roughness: 0.04,
   clearcoat: 1,
@@ -62,7 +72,7 @@ export const glass = new MeshPhysicalMaterial({
 })
 
 export const accentGlow = new MeshStandardMaterial({
-  color: '#14051a',
+  color: PALETTE.bg,
   emissive: PALETTE.accent,
   emissiveIntensity: 2.2,
   roughness: 0.5,
@@ -70,7 +80,7 @@ export const accentGlow = new MeshStandardMaterial({
 })
 
 export const lineMuted = new LineBasicMaterial({
-  color: '#3f3651',
+  color: PALETTE.violet,
   transparent: true,
   opacity: 0.85,
 })
@@ -84,7 +94,7 @@ export const lineAccent = new LineBasicMaterial({
 /** Creates an accent material whose glow can be animated independently. */
 export function createSignalMaterial(intensity = 0) {
   return new MeshStandardMaterial({
-    color: '#1b1624',
+    color: PALETTE.surface,
     emissive: PALETTE.accent,
     emissiveIntensity: intensity,
     metalness: 0.6,
@@ -110,6 +120,9 @@ export function createPointsMaterial({ size = 26, pixelRatio = 1, near = 0.6, fa
       uBoxMin: { value: [0, 0, 0] },
       uBoxSize: { value: [0, 0, 0] },
       uWrap: { value: 0 },
+      uAccent: { value: new Color(PALETTE.accent) },
+      uCounter: { value: new Color(PALETTE.teal) },
+      uNeutral: { value: new Color(PALETTE.text) },
     },
     vertexShader: /* glsl */ `
       attribute float aSize;
@@ -146,15 +159,18 @@ export function createPointsMaterial({ size = 26, pixelRatio = 1, near = 0.6, fa
       }
     `,
     fragmentShader: /* glsl */ `
+      uniform vec3 uAccent;
+      uniform vec3 uCounter;
+      uniform vec3 uNeutral;
       varying float vAlpha;
       varying float vRed;
       varying float vSeed;
       void main() {
         float r = length(gl_PointCoord - 0.5);
         float a = smoothstep(0.5, 0.05, r);
-        // Accent particles: mostly magenta, about a third muted teal.
-        vec3 accent = mix(vec3(0.71, 0.33, 0.74), vec3(0.36, 0.58, 0.66), step(0.66, fract(vSeed * 7.0)));
-        vec3 col = mix(vec3(0.83, 0.79, 0.9), accent, vRed);
+        // Violet and lavender particles share the material palette.
+        vec3 accent = mix(uAccent, uCounter, step(0.66, fract(vSeed * 7.0)));
+        vec3 col = mix(uNeutral, accent, vRed);
         gl_FragColor = vec4(col, a * vAlpha * 0.7);
       }
     `,

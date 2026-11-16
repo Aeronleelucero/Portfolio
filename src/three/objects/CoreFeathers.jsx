@@ -22,7 +22,7 @@ import { runtime } from '../runtime'
  * - Geometry: a subdivided, curved plane per feather; the silhouette comes
  *   from an alpha cut-out, so edges stay crisp at any resolution.
  * - Texture: drawn once on a canvas (shaft, fine barbs, vane splits, a
- *   plum → violet → magenta gradient) and reused as a bump map for relief.
+ *   deep purple → violet → lavender gradient) and reused as a bump map for relief.
  * - Depth: three layers at different distances, each with its own pointer
  *   parallax; all sit behind the orbital rings so nothing intersects.
  */
@@ -50,10 +50,10 @@ function drawFeatherTexture() {
   for (let v = 1; v >= 0.02; v -= 0.01) g.lineTo(cx + halfWidth(v, 1), y(v))
   g.closePath()
   const grad = g.createLinearGradient(0, TEX_H, 0, 0)
-  grad.addColorStop(0, '#24102e') // plum at the quill
+  grad.addColorStop(0, PALETTE.surface)
   grad.addColorStop(0.35, PALETTE.violet)
-  grad.addColorStop(0.78, PALETTE.accent) // magenta
-  grad.addColorStop(1, '#e3b6ea')
+  grad.addColorStop(0.78, PALETTE.accent)
+  grad.addColorStop(1, PALETTE.teal)
   g.fillStyle = grad
   g.fill()
 
@@ -68,7 +68,8 @@ function drawFeatherTexture() {
       const x1 = cx + side * w * 1.05
       const y1 = y(v) - w * 0.62
       const light = rand() > 0.5
-      g.strokeStyle = light ? 'rgba(236, 214, 246, 0.32)' : 'rgba(18, 6, 26, 0.38)'
+      g.strokeStyle = light ? PALETTE.text : PALETTE.bg
+      g.globalAlpha = light ? 0.32 : 0.38
       g.lineWidth = light ? 1.1 : 1.4
       g.beginPath()
       g.moveTo(cx, y(v))
@@ -92,10 +93,10 @@ function drawFeatherTexture() {
   }
   g.globalCompositeOperation = 'source-over'
 
-  // Shaft (rachis): a fine teal-to-lavender line, tapering to the tip.
+  // Shaft (rachis): a fine lavender line, tapering to the tip.
   const shaft = g.createLinearGradient(0, TEX_H, 0, 0)
   shaft.addColorStop(0, PALETTE.teal)
-  shaft.addColorStop(1, '#efe4f5')
+  shaft.addColorStop(1, PALETTE.text)
   g.strokeStyle = shaft
   for (let v = 0; v < 0.98; v += 0.01) {
     g.lineWidth = 3.4 * (1 - v) + 0.8
@@ -124,9 +125,9 @@ function buildFeatherGeometry() {
 
 // Layers from back to front: fewer, shorter feathers toward the viewer.
 const LAYERS = [
-  { z: -3.9, count: 11, length: [3.3, 3.9], tint: '#6d5288', tilt: 0.42, parallax: 0.06 },
-  { z: -3.4, count: 10, length: [2.6, 3.2], tint: '#ffffff', tilt: 0.5, parallax: 0.11 },
-  { z: -2.95, count: 8, length: [2.0, 2.5], tint: '#f4dcf6', tilt: 0.58, parallax: 0.17 },
+  { z: -3.9, count: 11, length: [3.3, 3.9], tint: PALETTE.violet, tilt: 0.42, parallax: 0.06 },
+  { z: -3.4, count: 10, length: [2.6, 3.2], tint: PALETTE.text, tilt: 0.5, parallax: 0.11 },
+  { z: -2.95, count: 8, length: [2.0, 2.5], tint: PALETTE.teal, tilt: 0.58, parallax: 0.17 },
 ]
 // The plume fans to the right/up/down, leaving the hero text side (left) clear.
 const ARC_START = MathUtils.degToRad(-145)
