@@ -83,30 +83,33 @@ export default function ResumePage() {
 
         <section className="r-section" aria-labelledby="r-projects">
           <h2 id="r-projects">Projects</h2>
-          {projects.filter((p) => p.inResume !== false).map((p) => (
-            <article key={p.id} className="r-entry">
-              <div className="r-entry__head">
-                <h3>
-                  {p.title}
-                  {p.subtitle && ` — ${p.subtitle}`}
-                </h3>
-                <span className="r-entry__date">{p.meta}</span>
-              </div>
-              {p.highlights.length > 1 && <p className="r-entry__sub">{p.cvSummary ?? p.summary}</p>}
-              <ul className="r-bullets">
-                {p.highlights.map((h) => (
-                  <li key={h}>{h}</li>
-                ))}
-              </ul>
-              {(p.links.github || p.links.demo) && (
-                <p className="r-entry__links">
-                  {p.links.github && <a href={p.links.github}>{stripProtocol(p.links.github)}</a>}
-                  {p.links.github && p.links.demo && ' · '}
-                  {p.links.demo && <a href={p.links.demo}>{stripProtocol(p.links.demo)}</a>}
-                </p>
-              )}
-            </article>
-          ))}
+          {projects.filter((p) => p.inResume !== false).map((p) => {
+            const bullets = p.cvHighlights ?? p.highlights
+            return (
+              <article key={p.id} className="r-entry">
+                <div className="r-entry__head">
+                  <h3>
+                    {p.title}
+                    {p.subtitle && ` — ${p.subtitle}`}
+                  </h3>
+                  <span className="r-entry__date">{p.meta}</span>
+                </div>
+                {bullets.length > 1 && <p className="r-entry__sub">{p.cvSummary ?? p.summary}</p>}
+                <ul className="r-bullets">
+                  {bullets.map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ul>
+                {(p.links.github || p.links.demo) && (
+                  <p className="r-entry__links">
+                    {p.links.github && <a href={p.links.github}>{stripProtocol(p.links.github)}</a>}
+                    {p.links.github && p.links.demo && ' · '}
+                    {p.links.demo && <a href={p.links.demo}>{stripProtocol(p.links.demo)}</a>}
+                  </p>
+                )}
+              </article>
+            )
+          })}
         </section>
 
         {honors.length > 0 && (

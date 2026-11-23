@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { ExternalLink, Maximize2 } from 'lucide-react'
 import { CATEGORY_LABELS } from '../../data/recognition'
+import { GitHubIcon } from '../ui/BrandIcons'
+import RecognitionAudit from './RecognitionAudit'
 
 const MAX_TILT = 3 // degrees
 
@@ -27,7 +29,7 @@ export default function RecognitionCard({ item, index, onOpen, allowTilt, openin
   }
 
   const openFromCard = (e) => {
-    if (e.target.closest('a, button')) return
+    if (e.target.closest('a, button, details')) return
     onOpen(item)
   }
 
@@ -97,6 +99,8 @@ export default function RecognitionCard({ item, index, onOpen, allowTilt, openin
           </dl>
         )}
 
+        <RecognitionAudit audit={item.audit} />
+
         <div className="rcard__actions">
           <button type="button" className="rcard__view" aria-haspopup="dialog" onClick={() => onOpen(item)}>
             <Maximize2 size={14} strokeWidth={1.7} aria-hidden="true" />
@@ -107,6 +111,13 @@ export default function RecognitionCard({ item, index, onOpen, allowTilt, openin
               <ExternalLink size={14} strokeWidth={1.7} aria-hidden="true" />
               Verify Certificate
               <span className="sr-only"> on the issuer’s website (opens in a new tab)</span>
+            </a>
+          )}
+          {item.repository && (
+            <a className="link-pill rcard__verify" href={item.repository} target="_blank" rel="noopener noreferrer">
+              <GitHubIcon size={14} />
+              Repository
+              <span className="sr-only"> for {item.title} on GitHub (opens in a new tab)</span>
             </a>
           )}
         </div>

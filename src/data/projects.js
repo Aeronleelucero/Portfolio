@@ -5,6 +5,9 @@
  * - `emblem`: the 3D visual in src/three/objects/emblems/.
  * - `media`: optional screenshot. `inference` holds overlay annotations and
  *   must come from REAL model output only (see herdVisionInference.js).
+ * - `screenshot`: a real capture of a website (no live deployment), shown as a
+ *   framed browser screenshot. `description`: optional extra paragraphs.
+ * - `cvHighlights`: resume bullets when they differ from the card's `highlights`.
  * - `live`: a deployed site shown as a live iframe preview (hover) and in a
  *   near full-screen modal (click), shared by the featured live projects.
  * - `inResume: false`: shown in the portfolio but not on /resume.html (which
@@ -55,6 +58,49 @@ export const projects = [
       allow: 'fullscreen; clipboard-write',
     },
     links: { github: null, demo: 'https://operation-blackout-lake.vercel.app/' },
+  },
+  {
+    id: 'artikly',
+    title: 'Artikly',
+    subtitle: 'Full-Stack Blogging Platform',
+    meta: 'React, Express.js & PostgreSQL',
+    category: 'Full-Stack Development',
+    summary:
+      'A modern, responsive blogging platform built with React, Express.js, PostgreSQL, and Supabase.',
+    // One-line description for /resume.html and the PDF CV.
+    cvSummary: 'Modern, responsive full-stack blogging platform with a personalized writer dashboard.',
+    description: [
+      'Features a personalized dashboard where writers can create, edit, publish, and manage articles, monitor blog statistics, and customize their profiles.',
+      'Developed secure authentication and authorization using bcrypt password hashing, HttpOnly session cookies, CSRF protection, and server-side ownership validation. Implemented PostgreSQL-backed rate limiting, HTTPS-aware security middleware, and production deployment configurations.',
+      'Validated application functionality and security through 29 automated backend tests and 11 browser regression checks.',
+    ],
+    // Key features (portfolio card).
+    highlights: [
+      'Article creation, editing, publishing, and management',
+      'Secure authentication and protected dashboard routes',
+      'Personalized profiles and blog statistics',
+      'Server-side authorization and article ownership protection',
+      'Production-focused security and rate limiting',
+      '29 backend tests and 11 browser checks',
+    ],
+    // Resume bullets (/resume.html and the PDF CV), condensed from the description.
+    cvHighlights: [
+      'Built a writer dashboard for creating, editing, publishing, and managing articles, with blog statistics and customizable profiles.',
+      'Developed secure authentication and authorization using bcrypt password hashing, HttpOnly session cookies, CSRF protection, and server-side ownership validation.',
+      'Implemented PostgreSQL-backed rate limiting, HTTPS-aware security middleware, and production deployment configurations with Nginx.',
+      'Validated functionality and security through 29 automated backend tests and 11 browser regression checks.',
+    ],
+    stack: ['React', 'Vite', 'Express.js', 'PostgreSQL', 'Supabase', 'Nginx'],
+    emblem: 'article',
+    // A real capture of the running Artikly homepage (1440 × 900).
+    screenshot: {
+      src: '/images/projects/artikly.webp',
+      width: 1440,
+      height: 900,
+      alt: 'Artikly homepage: the "Give Your Ideas a Voice" hero with article search, site stats, and article categories',
+      label: 'Artikly · Homepage',
+    },
+    links: { github: null, demo: null },
   },
   {
     id: 'qr-attendance',

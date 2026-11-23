@@ -2,6 +2,8 @@ import { useLayoutEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight, ExternalLink, Maximize2 } from 'lucide-react'
 import { CATEGORY_LABELS } from '../../data/recognition'
 import { gsap } from '../../animations/scrollConfig'
+import { GitHubIcon } from '../ui/BrandIcons'
+import RecognitionAudit from './RecognitionAudit'
 
 const MAX_TILT = 5 // degrees, active frame only
 
@@ -227,6 +229,7 @@ export default function RecognitionExhibit({ items, active, onSelect, onOpen, op
               <p className="exhibit__event">{current.event ?? current.certificateType}</p>
             )}
             <p className="exhibit__desc">{current.description}</p>
+            <RecognitionAudit audit={current.audit} />
           </div>
           <div className="exhibit__side">
             <dl className="exhibit__facts">
@@ -263,6 +266,13 @@ export default function RecognitionExhibit({ items, active, onSelect, onOpen, op
                   <ExternalLink size={14} strokeWidth={1.7} aria-hidden="true" />
                   Verify Certificate
                   <span className="sr-only"> on the issuer’s website (opens in a new tab)</span>
+                </a>
+              )}
+              {current.repository && (
+                <a className="link-pill rcard__verify" href={current.repository} target="_blank" rel="noopener noreferrer">
+                  <GitHubIcon size={14} />
+                  Repository
+                  <span className="sr-only"> for {current.title} on GitHub (opens in a new tab)</span>
                 </a>
               )}
             </div>

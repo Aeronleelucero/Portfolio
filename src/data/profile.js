@@ -47,7 +47,7 @@ export const profile = {
   // Summary used on the printable resume.
   // Matches the PDF CV's Professional Summary verbatim.
   summary:
-    'Computer Science graduate and aspiring software developer with hands-on experience building web and mobile applications, REST APIs, database-backed systems, and computer-vision solutions. Developed a QR Attendance application using React Native with offline attendance storage and synchronization with a Laravel backend. Interested in secure, reliable, and user-focused software systems.',
+    'Computer Science graduate and aspiring software developer with hands-on experience building web and mobile applications, REST APIs, database-backed systems, and computer-vision solutions. Developed a QR Attendance application using React Native with offline attendance storage and synchronization with a Laravel backend. Built Artikly, a full-stack blogging platform using React, Express.js, and PostgreSQL with secure session-based authentication and automated testing. Interested in secure, reliable, and user-focused software systems.',
 
   strengths: ['Problem-solving', 'Analytical thinking', 'Independent and team collaboration', 'Willingness to learn new technologies'],
 
