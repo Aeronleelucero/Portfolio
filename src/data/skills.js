@@ -19,19 +19,19 @@ export const skillCategories = [
     id: 'backend',
     label: 'Backend & APIs',
     blurb: 'Services, APIs and real-time communication.',
-    items: ['FastAPI', 'REST APIs', 'WebSockets'],
+    items: ['Express.js', 'FastAPI', 'REST APIs', 'WebSockets'],
   },
   {
     id: 'databases',
     label: 'Databases',
     blurb: 'Relational storage, from server to offline device.',
-    items: ['MySQL', 'SQLite', 'SQL Server'],
+    items: ['PostgreSQL', 'Supabase', 'MySQL', 'SQLite', 'SQL Server'],
   },
   {
     id: 'tools',
     label: 'Tools & Platforms',
     blurb: 'Day-to-day development environment.',
-    items: ['Git', 'Visual Studio Code', 'Figma', 'Android Studio', 'Linux'],
+    items: ['Git', 'Visual Studio Code', 'Figma', 'Android Studio', 'Linux', 'Nginx'],
   },
   {
     id: 'engineering',

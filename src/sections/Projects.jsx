@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import SectionHeader from '../components/ui/SectionHeader'
 import TagList from '../components/ui/TagList'
 import InferenceFigure from '../components/ui/InferenceFigure'
+import ScreenshotFigure from '../components/ui/ScreenshotFigure'
 import LivePreviewCard from '../components/live/LivePreviewCard'
 import LiveSiteModal from '../components/live/LiveSiteModal'
 import { GitHubIcon } from '../components/ui/BrandIcons'
@@ -48,7 +49,7 @@ export default function Projects() {
           >
             <div className="container">
               <article
-                className={`panel project ${project.media ? 'project--media' : ''} ${project.live ? 'project--live' : ''}`}
+                className={`panel project ${project.media ? 'project--media' : ''} ${project.live ? 'project--live' : ''} ${project.screenshot ? 'project--shot' : ''}`}
                 aria-labelledby={`project-${project.id}-title`}
                 onMouseEnter={() => setActiveProject(project.id)}
                 onMouseLeave={() => setActiveProject(null)}
@@ -96,6 +97,14 @@ export default function Projects() {
                     inference={project.media.inference}
                   />
                 )}
+
+                {project.screenshot && <ScreenshotFigure {...project.screenshot} />}
+
+                {project.description?.map((paragraph) => (
+                  <p key={paragraph} className="project__description" data-reveal>
+                    {paragraph}
+                  </p>
+                ))}
 
                 {project.highlights.length > 0 && (
                   <ul className="project__highlights" data-reveal>

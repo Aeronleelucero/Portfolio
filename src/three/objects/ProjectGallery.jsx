@@ -14,6 +14,7 @@ import InventoryEmblem from './emblems/InventoryEmblem'
 import CartEmblem from './emblems/CartEmblem'
 import PortalEmblem from './emblems/PortalEmblem'
 import BlackoutEmblem from './emblems/BlackoutEmblem'
+import ArticleEmblem from './emblems/ArticleEmblem'
 
 const EMBLEMS = {
   pose: PoseEmblem,
@@ -23,6 +24,7 @@ const EMBLEMS = {
   cart: CartEmblem,
   portal: PortalEmblem,
   blackout: BlackoutEmblem,
+  article: ArticleEmblem,
 }
 
 function ProjectStation({ project, index, geometries }) {
